@@ -17,7 +17,7 @@ workflow MOOSE {
    String accelerator = "cuda"
 
    # Docker image
-   String mooseDocker = "imagingdatacommons/inference_moose:main"
+   String mooseDocker = "sunderlandkyl/moose-test:latest"
 
    # Preemptible retries (Terra will retry on spot-instance interruption)
    Int moosePreemptibleTries = 3
