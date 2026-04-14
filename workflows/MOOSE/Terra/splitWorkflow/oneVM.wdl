@@ -75,7 +75,7 @@ task mooseEndToEnd {
  }
 
  command {
-   wget https://raw.githubusercontent.com/ImagingDataCommons/CloudSegmentator/main/workflows/MOOSE/Notebooks/endToEndMOOSENotebook.ipynb
+   wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/endToEndMOOSENotebook.ipynb
    set -e
    papermill endToEndMOOSENotebook.ipynb mooseOutputNotebook.ipynb \
      -y "~{yamlListOfSeriesInstanceUIDs}" \
