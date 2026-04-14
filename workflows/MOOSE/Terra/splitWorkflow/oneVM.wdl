@@ -32,7 +32,7 @@ workflow MOOSE {
    String mooseGpuType = "nvidia-tesla-t4"
 
    # Compute: eligible GCP zones that have the requested GPU
-   String mooseZones = "us-west4-a us-west4-b us-east4-a us-east4-b us-east4-c europe-west2-a europe-west2-b asia-northeast1-a asia-northeast1-c asia-southeast1-a asia-southeast1-b asia-southeast1-c europe-west4-a europe-west4-b europe-west4-c"
+   String mooseZones = "us-east4-a us-east4-b us-east4-c"
  }
 
  call mooseEndToEnd {
