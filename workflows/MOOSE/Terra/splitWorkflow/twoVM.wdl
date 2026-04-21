@@ -151,9 +151,9 @@ task mooseInference {
     set -e
 
     # Pin to a specific commit for reproducibility (update SHA as needed)
-    wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/endToEndMOOSENotebook.ipynb
+    wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/mooseInferenceNotebook.ipynb
 
-    papermill endToEndMOOSENotebook.ipynb mooseInferenceOutputNotebook.ipynb \
+    papermill mooseInferenceNotebook.ipynb mooseInferenceOutputNotebook.ipynb \
       -y "~{yamlListOfSeriesInstanceUIDs}" \
       -p moose_models "~{mooseModels}" \
       -p accelerator "~{accelerator}" \
@@ -207,7 +207,7 @@ task moosePostProcess {
     set -o pipefail
     set +o errexit
 
-    wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/main/workflows/MOOSE/Notebooks/moosePostProcessNotebook.ipynb
+    wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/moosePostProcessNotebook.ipynb
 
     papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb \
       -p segmentationArchivePath ~{inferenceOutputArchive}
