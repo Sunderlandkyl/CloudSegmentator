@@ -291,7 +291,7 @@ print("Normalized archive ready: " + str(normalized_archive))
 PY
 
     lz4 -d -c moose_segmentations.normalized.tar.lz4 | tar -tf - > moose_postprocess_input_tar_list.txt
-    if ! grep -E '\\.nii(\\.gz)?$' moose_postprocess_input_tar_list.txt >/dev/null; then
+    if ! grep -E '\.nii(\.gz)?$' moose_postprocess_input_tar_list.txt >/dev/null; then
       >&2 echo "No NIfTI files found in normalized inference archive"
       if [ ! -f dicom_seg_error_file.txt ]; then
         echo "No NIfTI segmentations found in normalized archive for post-processing." > dicom_seg_error_file.txt
@@ -301,7 +301,7 @@ PY
 
     # The post-process notebook requires a per-series layout:
     # <root>/<SeriesInstanceUID>/.../*.nii.gz
-    if ! grep -E '^[^/]+/[^/]+/.+\\.nii(\\.gz)?$' moose_postprocess_input_tar_list.txt >/dev/null; then
+    if ! grep -E '^[^/]+/[^/]+/.+\.nii(\.gz)?$' moose_postprocess_input_tar_list.txt >/dev/null; then
       >&2 echo "Normalized archive has NIfTI files but lacks per-series UID subdirectories"
       if [ ! -f dicom_seg_error_file.txt ]; then
         {
@@ -330,7 +330,7 @@ PY
     fi
 
     # Guard against a successful notebook run that produced only empty directories.
-    if ! lz4 -d -c moose_dicom_seg.tar.lz4 | tar -tf - | grep -E '\\.dcm$' >/dev/null; then
+    if ! lz4 -d -c moose_dicom_seg.tar.lz4 | tar -tf - | grep -E '\.dcm$' >/dev/null; then
       >&2 echo "No DICOM-SEG files found in moose_dicom_seg.tar.lz4"
       >&2 echo "----- post-process input archive listing tail -----"
       tail -n 200 moose_postprocess_input_tar_list.txt >&2 || true
