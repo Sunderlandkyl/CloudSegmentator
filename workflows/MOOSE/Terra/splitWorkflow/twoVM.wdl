@@ -315,16 +315,13 @@ PY
       exit 1
     fi
 
-    papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4" 2>&1 | tee moose_postprocess_papermill.log
-
-    papermill_rc=${PIPESTATUS[0]}
+    papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4"
+    papermill_rc=$?
     if [ "$papermill_rc" -ne 0 ]; then
       >&2 echo "Post-process notebook failed (papermill rc=$papermill_rc)"
-      >&2 echo "----- papermill log tail -----"
-      tail -n 200 moose_postprocess_papermill.log >&2 || true
       if [ -f dicom_seg_error_file.txt ]; then
-        >&2 echo "----- dicom_seg_error_file.txt tail -----"
-        tail -n 200 dicom_seg_error_file.txt >&2 || true
+        >&2 echo "----- dicom_seg_error_file.txt -----"
+        cat dicom_seg_error_file.txt >&2 || true
       fi
       exit "$papermill_rc"
     fi
@@ -368,6 +365,5 @@ PY
 
     File? dicomSegErrors    = "dicom_seg_error_file.txt"
     File? postProcessInputArchiveListing = "moose_postprocess_input_tar_list.txt"
-    File? postProcessPapermillLog = "moose_postprocess_papermill.log"
   }
 }
