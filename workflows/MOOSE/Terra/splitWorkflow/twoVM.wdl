@@ -298,7 +298,7 @@ PY
       fi
       exit 1
     fi
- 
+
     # The post-process notebook requires a per-series layout:
     # <root>/<SeriesInstanceUID>/.../*.nii.gz
     if ! grep -E '^[^/]+/[^/]+/.+\\.nii(\\.gz)?$' moose_postprocess_input_tar_list.txt >/dev/null; then
@@ -315,15 +315,13 @@ PY
       exit 1
     fi
 
-    papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4"
-    papermill_rc=$?
-    if [ "$papermill_rc" -ne 0 ]; then
-      >&2 echo "Post-process notebook failed (papermill rc=$papermill_rc)"
+    if ! papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4"; then
+      >&2 echo "Post-process notebook failed"
       if [ -f dicom_seg_error_file.txt ]; then
         >&2 echo "----- dicom_seg_error_file.txt -----"
         cat dicom_seg_error_file.txt >&2 || true
       fi
-      exit "$papermill_rc"
+      exit 1
     fi
 
     if [ ! -f moose_dicom_seg.tar.lz4 ]; then
