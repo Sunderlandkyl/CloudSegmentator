@@ -298,7 +298,7 @@ PY
       fi
       exit 1
     fi
-
+ 
     # The post-process notebook requires a per-series layout:
     # <root>/<SeriesInstanceUID>/.../*.nii.gz
     if ! grep -E '^[^/]+/[^/]+/.+\\.nii(\\.gz)?$' moose_postprocess_input_tar_list.txt >/dev/null; then
