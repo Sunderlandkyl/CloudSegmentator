@@ -147,7 +147,7 @@ task mooseInference {
     String zones
   }
 
-  command {
+  command <<<
     set -e
 
     # Pin to a specific commit for reproducibility (update SHA as needed)
@@ -173,7 +173,7 @@ task mooseInference {
       fi
       exit 1
     fi
-  }
+  >>>
 
   runtime {
     docker:      docker
@@ -218,7 +218,7 @@ task moosePostProcess {
     String zones
   }
 
-  command {
+  command <<<
     set -o xtrace
     set -o pipefail
     set +o errexit
@@ -343,7 +343,7 @@ PY
     fi
 
     set -o errexit
-  }
+  >>>
 
   runtime {
     docker:      docker
