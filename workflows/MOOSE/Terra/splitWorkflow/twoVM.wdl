@@ -224,6 +224,7 @@ task moosePostProcess {
     set +o errexit
 
     wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/moosePostProcessNotebook.ipynb
+    wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/resources/moose_snomed_mapping.csv
 
     # Normalize inference archive layout for compatibility:
     # - Current expected: <uid>/moosez-<model>-<timestamp>/segmentations/*.nii.gz
