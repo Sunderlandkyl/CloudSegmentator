@@ -54,7 +54,7 @@ workflow MOOSE {
     # POST-PROCESSING TASK (CPU-only) — DICOM-SEG generation, compression
     # ------------------------------------------------------------------------
 
-    String moosePostProcessDocker = "sunderlandkyl/post_process_moose:v2"
+    String moosePostProcessDocker = "sunderlandkyl/post_process_moose:latest"
 
     Int moosePostProcessPreemptibleTries = 3
     Int moosePostProcessCpus = 4
