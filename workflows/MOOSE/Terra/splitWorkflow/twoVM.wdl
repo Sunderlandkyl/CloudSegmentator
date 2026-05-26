@@ -23,9 +23,11 @@ workflow MOOSE {
     # ------------------------------------------------------------------------
 
     # Comma-separated moosez model names
-    # Available: clin_ct_organs, clin_ct_ribs, clin_ct_vertebrae, clin_ct_body,
-    #            clin_ct_muscles, clin_ct_cardiac, clin_ct_lungs
-    String mooseModels = "clin_ct_organs,clin_ct_ribs,clin_ct_vertebrae"
+    # Available: clin_ct_body, clin_ct_body_composition, clin_ct_cardiac,
+    #            clin_ct_digestive, clin_ct_lungs, clin_ct_muscles,
+    #            clin_ct_organs, clin_ct_peripheral_bones, clin_ct_ribs,
+    #            clin_ct_vertebrae
+    String mooseModels = "clin_ct_body,clin_ct_body_composition,clin_ct_cardiac,clin_ct_digestive,clin_ct_lungs,clin_ct_muscles,clin_ct_organs,clin_ct_peripheral_bones,clin_ct_ribs,clin_ct_vertebrae"
 
     # Accelerator for moosez: 'cuda' for GPU, 'cpu' for CPU-only
     String accelerator = "cuda"
@@ -52,7 +54,7 @@ workflow MOOSE {
     # POST-PROCESSING TASK (CPU-only) — DICOM-SEG generation, compression
     # ------------------------------------------------------------------------
 
-    String moosePostProcessDocker = "sunderlandkyl/post_process_moose:latest"
+    String moosePostProcessDocker = "sunderlandkyl/post_process_moose:v2"
 
     Int moosePostProcessPreemptibleTries = 3
     Int moosePostProcessCpus = 4
@@ -224,7 +226,7 @@ task moosePostProcess {
     set +o errexit
 
     wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/moosePostProcessNotebook.ipynb
-    wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/resources/moose_snomed_mapping.csv
+    wget https://raw.githubusercontent.com/ENHANCE-PET/MOOSE/main/moosez/mappings/SNOMED.py
 
     # Normalize inference archive layout for compatibility:
     # - Current expected: <uid>/moosez-<model>-<timestamp>/segmentations/*.nii.gz

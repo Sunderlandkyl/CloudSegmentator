@@ -1,8 +1,8 @@
-FROM python@sha256:5b287042a6150052420e6a7fb7c1606b6403740880897ae9610faf434da28693
+FROM python:3.11-slim-bookworm
 
 ARG GIT_HASH
 
-LABEL PYTHON_BASE_DOCKER_IMAGE="python:3.11.2-slim-buster"\
+LABEL PYTHON_BASE_DOCKER_IMAGE="python:3.11-slim-bookworm"\
       MAINTAINER="IDC <idc-support@cancerimagingarchive.net>" \
       GIT_HASH=${GIT_HASH}\
       PATH_TO_DOCKER_FILE="https://github.com/imagingdatacommons/CloudSegmentator/blob/${GIT_HASH}/workflows/MOOSE/Dockerfiles/post_process_moose/Dockerfile"\
@@ -20,13 +20,13 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache-dir \
-    idc-index==0.2.8 \
+    idc-index \
     ipykernel==6.22.0 \
     ipython==8.11.0 \
     ipywidgets==8.0.5 \
     jupyter==1.0.0 \
     nibabel==5.1.0 \
-    numpy \
+    "numpy<2" \
     pandas==1.5.3 \
     papermill==2.4.0 \
     pydicom==2.4.1 \
