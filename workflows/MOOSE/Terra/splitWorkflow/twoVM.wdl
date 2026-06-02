@@ -117,6 +117,7 @@ workflow MOOSE {
 
     # Primary outputs
     File mooseSegmentations    = mooseInference.segmentationArchive
+    File mooseStatsCSVs        = mooseInference.mooseStatsArchive
     File mooseDicomSegFiles    = moosePostProcess.dicomSegArchive
 
     # Optional error files (only produced if errors occurred)
@@ -175,6 +176,19 @@ task mooseInference {
       fi
       exit 1
     fi
+
+    # Bundle the native moosez stats CSVs (volume + HU intensity per label) into
+    # a separate archive so they can be surfaced as a distinct workflow output.
+    grep -E '\.csv$' moose_segmentations_tar_list.txt > moose_stats_csv_list.txt || true
+    if [ -s moose_stats_csv_list.txt ]; then
+      mkdir -p /tmp/moose_stats_extract
+      lz4 -d -c moose_segmentations.tar.lz4 | tar -xf - -C /tmp/moose_stats_extract -T moose_stats_csv_list.txt
+      tar -cf - -C /tmp/moose_stats_extract . | lz4 > moose_stats.tar.lz4
+    else
+      >&2 echo "WARNING: No stats CSVs found in segmentation archive — moosez may not have written them"
+      mkdir -p /tmp/empty_stats
+      tar -cf - -C /tmp/empty_stats . | lz4 > moose_stats.tar.lz4
+    fi
   >>>
 
   runtime {
@@ -193,6 +207,7 @@ task mooseInference {
     File outputNotebook       = "mooseInferenceOutputNotebook.ipynb"
     File segmentationArchive  = "moose_segmentations.tar.lz4"
     File usageMetrics         = "moose_inference_UsageMetrics.lz4"
+    File mooseStatsArchive    = "moose_stats.tar.lz4"
 
     File? downloadErrors      = "download_error_file.txt"
     File? dcm2niixErrors      = "dcm2niix_error_file.txt"
