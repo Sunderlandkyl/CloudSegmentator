@@ -49,6 +49,25 @@ RUN pip install --no-cache-dir \
 RUN find /usr/local/lib -name "halo.py" -path "*/halo/halo.py" \
     -exec sed -i 's/def clean_up():/def clean_up(*_):/' {} \;
 
+# Pre-download all moosez model weights used by the workflow so they are baked
+# into the image layer and never fetched at job runtime.
+# Each model is in its own RUN layer so Docker can cache partial progress —
+# a network interruption only requires re-downloading the failed model onward.
+# Models are stored inside the installed package at:
+#   <site-packages>/moosez/models/nnunet_trained_models/<folder_name>/
+# moosez.models.Model.__init__ calls __download() which checks for an existing
+# local copy (by URL hash) and skips the download if already present.
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_body',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_body_composition',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_cardiac',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_digestive',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_lungs',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_muscles',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_organs',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_peripheral_bones',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_ribs',m)"
+RUN python3 -c "from moosez import system; from moosez.models import Model; m=system.OutputManager(verbose_console=True,verbose_log=False); Model('clin_ct_vertebrae',m)"
+
 # Download and install s5cmd for interacting with cloud storage
 ENV S5CMD_URL="https://github.com/peak/s5cmd/releases/download/v2.2.2/s5cmd_2.2.2_Linux-64bit.tar.gz"
 ENV S5CMD_FN="s5cmd_2.2.2_Linux-64bit.tar.gz"
