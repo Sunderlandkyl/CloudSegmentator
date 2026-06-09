@@ -247,6 +247,7 @@ task moosePostProcess {
     # - Current expected: <uid>/moosez-<model>-<timestamp>/segmentations/*.nii.gz
     # - Legacy/flat:      <uid>/*.nii.gz (or nested without model directories)
     python3 - <<'PY'
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -254,6 +255,8 @@ from pathlib import Path
 src_archive = Path("~{inferenceOutputArchive}")
 extract_root = Path("/tmp/moose_preprocess_extract")
 normalized_archive = Path("moose_segmentations.normalized.tar.lz4")
+
+_MODEL_DIR_RE = re.compile(r"^moosez-(?P<model>.+?)-\d{4}[-_]?\d{2}[-_]?\d{2}[-_T]?\d{2}[-_:]?\d{2}[-_:]?\d{2}$")
 
 if extract_root.exists():
     shutil.rmtree(extract_root)
@@ -271,7 +274,7 @@ else:
     moose_root = extract_root
 
 for series_dir in [p for p in moose_root.iterdir() if p.is_dir()]:
-    model_dirs = [p for p in series_dir.iterdir() if p.is_dir()]
+    model_dirs = [p for p in series_dir.iterdir() if p.is_dir() and _MODEL_DIR_RE.match(p.name)]
     if model_dirs:
         continue
 
