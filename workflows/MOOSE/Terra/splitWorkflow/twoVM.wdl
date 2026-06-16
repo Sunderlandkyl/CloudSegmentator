@@ -66,6 +66,15 @@ workflow MOOSE {
     String moosePostProcessCpuFamily = "AMD Rome"
 
     String moosePostProcessZones = "us-east4-a us-east4-b us-east4-c"
+
+    # ------------------------------------------------------------------------
+    # OPTIONAL: push generated DICOM-SEG to a DICOMweb store (STOW-RS)
+    # ------------------------------------------------------------------------
+    # Full DICOMweb base URL, e.g.
+    #   https://healthcare.googleapis.com/v1/projects/PROJECT/locations/LOCATION/datasets/DATASET/dicomStores/STORE/dicomWeb
+    # Empty = skip upload. Authenticated by the VM pet service account (ADC) --
+    # grant it roles/healthcare.dicomEditor. This is NOT a secret.
+    String dicomStoreWebUri = ""
   }
 
   # ==========================================================================
@@ -100,7 +109,8 @@ workflow MOOSE {
       diskGB                 = moosePostProcessDiskGB,
       diskType               = moosePostProcessDiskType,
       cpuFamily              = moosePostProcessCpuFamily,
-      zones                  = moosePostProcessZones
+      zones                  = moosePostProcessZones,
+      dicomStoreWebUri       = dicomStoreWebUri
   }
 
   # ==========================================================================
@@ -233,6 +243,7 @@ task moosePostProcess {
     String diskType
     String cpuFamily
     String zones
+    String dicomStoreWebUri
   }
 
   command <<<
@@ -336,7 +347,7 @@ PY
       exit 1
     fi
 
-    if ! papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4"; then
+    if ! papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4" -p dicomStoreWebUri "~{dicomStoreWebUri}"; then
       >&2 echo "Post-process notebook failed"
       if [ -f dicom_seg_error_file.txt ]; then
         >&2 echo "----- dicom_seg_error_file.txt -----"
