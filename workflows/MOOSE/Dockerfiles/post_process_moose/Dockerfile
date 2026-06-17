@@ -20,8 +20,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache-dir \
-    dicomweb-client==0.59.1 \
-    google-auth==2.29.0 \
+    google-cloud-storage==2.16.0 \
     idc-index \
     ipykernel==6.22.0 \
     ipython==8.11.0 \
