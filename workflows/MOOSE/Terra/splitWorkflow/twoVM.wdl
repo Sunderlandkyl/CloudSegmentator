@@ -32,6 +32,12 @@ workflow MOOSE {
     # Accelerator for moosez: 'cuda' for GPU, 'cpu' for CPU-only
     String accelerator = "cuda"
 
+    # OPTIONAL: GCS prefix for per-series checkpoints (e.g. gs://fc-<bucket>/moose_ckpt).
+    # When set, a preempted inference VM restores already-finished series from GCS and
+    # only recomputes the remainder, instead of redoing the whole batch. Empty = disabled.
+    # Must be writable by the VM pet service account (your Terra workspace bucket works).
+    String checkpointGcsPath = ""
+
     # ------------------------------------------------------------------------
     # INFERENCE TASK (GPU) — download, convert, run moosez
     # ------------------------------------------------------------------------
@@ -85,6 +91,7 @@ workflow MOOSE {
       yamlListOfSeriesInstanceUIDs = yamlListOfSeriesInstanceUIDs,
       mooseModels                  = mooseModels,
       accelerator                  = accelerator,
+      checkpointGcsPath            = checkpointGcsPath,
       docker                       = mooseInferenceDocker,
       preemptibleTries             = mooseInferencePreemptibleTries,
       cpus                         = mooseInferenceCpus,
@@ -149,6 +156,7 @@ task mooseInference {
     String yamlListOfSeriesInstanceUIDs
     String mooseModels
     String accelerator
+    String checkpointGcsPath
     String docker
     Int    preemptibleTries
     Int    cpus
@@ -166,7 +174,7 @@ task mooseInference {
     # Pin to a specific commit for reproducibility (update SHA as needed)
     wget https://raw.githubusercontent.com/Sunderlandkyl/CloudSegmentator/moose_test/workflows/MOOSE/Notebooks/mooseInferenceNotebook.ipynb
 
-    papermill mooseInferenceNotebook.ipynb mooseInferenceOutputNotebook.ipynb -y "~{yamlListOfSeriesInstanceUIDs}" -p moose_models "~{mooseModels}" -p accelerator "~{accelerator}" || (>&2 echo "Inference task failed" && exit 1)
+    papermill mooseInferenceNotebook.ipynb mooseInferenceOutputNotebook.ipynb -y "~{yamlListOfSeriesInstanceUIDs}" -p moose_models "~{mooseModels}" -p accelerator "~{accelerator}" -p checkpoint_gcs "~{checkpointGcsPath}" || (>&2 echo "Inference task failed" && exit 1)
 
     if [ ! -f moose_segmentations.tar.lz4 ]; then
       >&2 echo "Expected output archive moose_segmentations.tar.lz4 was not created"
