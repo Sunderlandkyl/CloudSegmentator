@@ -82,6 +82,22 @@ workflow MOOSE {
     # pet service account (ADC) -- grant it roles/storage.objectAdmin on the
     # bucket. This is NOT a secret.
     String dicomSegBucketUri = ""
+
+    # ------------------------------------------------------------------------
+    # OPTIONAL: import generated DICOM-SEG from the GCS bucket above into a
+    # Healthcare API DICOM store
+    # ------------------------------------------------------------------------
+    # Full dicomStore resource name, e.g.
+    #   projects/PROJECT/locations/LOCATION/datasets/DATASET/dicomStores/STORE
+    # The dicomStore may live in a different GCP project than this workflow --
+    # that's fine, the resource name fully qualifies the target. Requires
+    # dicomSegBucketUri to be set too, since the import reads from that GCS
+    # location. Empty = skip import. Authenticated by the VM pet service
+    # account (ADC) -- grant it roles/healthcare.dicomEditor on the dataset in
+    # whichever project hosts it, AND grant the Cloud Healthcare API service
+    # agent in that project roles/storage.objectViewer on the source bucket
+    # (the import job reads from GCS server-side). This is NOT a secret.
+    String dicomStoreImportUri = ""
   }
 
   # ==========================================================================
@@ -118,7 +134,8 @@ workflow MOOSE {
       diskType               = moosePostProcessDiskType,
       cpuFamily              = moosePostProcessCpuFamily,
       zones                  = moosePostProcessZones,
-      dicomSegBucketUri      = dicomSegBucketUri
+      dicomSegBucketUri      = dicomSegBucketUri,
+      dicomStoreImportUri    = dicomStoreImportUri
   }
 
   # ==========================================================================
@@ -253,6 +270,7 @@ task moosePostProcess {
     String cpuFamily
     String zones
     String dicomSegBucketUri
+    String dicomStoreImportUri
   }
 
   command <<<
@@ -356,7 +374,7 @@ PY
       exit 1
     fi
 
-    if ! papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4" -p dicomSegBucketUri "~{dicomSegBucketUri}"; then
+    if ! papermill moosePostProcessNotebook.ipynb moosePostProcessOutputNotebook.ipynb -p segmentationArchivePath "moose_segmentations.normalized.tar.lz4" -p dicomSegBucketUri "~{dicomSegBucketUri}" -p dicomStoreImportUri "~{dicomStoreImportUri}"; then
       >&2 echo "Post-process notebook failed"
       if [ -f dicom_seg_error_file.txt ]; then
         >&2 echo "----- dicom_seg_error_file.txt -----"

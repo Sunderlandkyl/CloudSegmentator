@@ -20,6 +20,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache-dir \
+    google-auth==2.29.0 \
     google-cloud-storage==2.16.0 \
     idc-index \
     ipykernel==6.22.0 \
@@ -31,6 +32,7 @@ RUN pip3 install --no-cache-dir \
     pandas==1.5.3 \
     papermill==2.4.0 \
     pydicom==2.4.1 \
+    requests==2.31.0 \
     tqdm==4.65.0
 
 # Download and install s5cmd for interacting with cloud storage
