@@ -366,6 +366,9 @@ def load_harmonized_metrics(submission_root, wf_ids):
         if "model_inference_s" in cols:               # nb2 inference_UsageMetrics.csv
             for r in rows:
                 s = ser.setdefault(r["SeriesInstanceUID"], {})
+                if str(r.get("checkpoint_restored", "")).lower() == "true":
+                    s.setdefault("restored_models", []).append(r.get("model") or "")
+                    continue                          # no inference time: restored from checkpoint
                 s.setdefault("models_s", {})[r.get("model") or ""] = _f(r.get("model_inference_s"))
                 s["inference_run_total_s"] = _f(r.get("run_total_elapsed_s"))
         elif "model_seg_s" in cols:                   # nb3 output_conversion_UsageMetrics.csv
@@ -381,6 +384,8 @@ def load_harmonized_metrics(submission_root, wf_ids):
                     s["ref_download_s"] = _f(r.get("ref_download_s"))
                     if r.get("radiomics_method"):
                         s["radiomics_method"] = r.get("radiomics_method")
+                    if str(r.get("checkpoint_restored", "")).lower() == "true":
+                        s["oc_checkpoint_restored"] = True
         elif "dcm2niix_s" in cols:                    # nb1 convert_UsageMetrics.csv
             for r in rows:
                 s = ser.setdefault(r["SeriesInstanceUID"], {})
@@ -857,6 +862,8 @@ def main():
                 "dcm2niixSec": hs.get("dcm2niix_s") if hs.get("dcm2niix_s") is not None else ls.get("dcm2niix_s"),
                 "inferenceSec": hs.get("inference_s") if hs.get("inference_s") is not None else ls.get("moose_s"),
                 "nModels": len(models_s) if models_s else None,
+                "checkpointRestoredModels": len(hs.get("restored_models") or []) or None,
+                "outputConversionRestored": hs.get("oc_checkpoint_restored") or None,
                 "segSec": hs.get("seg_total_s"),
                 "radiomicsSec": hs.get("radiomics_total_s"),
                 "refDownloadSec": hs.get("ref_download_s"),
