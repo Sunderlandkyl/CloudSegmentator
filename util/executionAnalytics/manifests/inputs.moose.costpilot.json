@@ -12,5 +12,6 @@
   "Segmentator.yamlListOfSeriesInstanceUIDs": "this.SeriesInstanceUIDs",
   "Segmentator.radiomicsMethod": "radiomicsjl",
   "Segmentator.inferenceZones": "us-west4-a us-west4-b",
-  "Segmentator.outputConversionZones": "us-west4-a us-west4-b"
+  "Segmentator.outputConversionZones": "us-west4-a us-west4-b",
+  "Segmentator.checkpointGcsPath": "gs://fc-63cbe829-cad1-490e-a4ea-23e9c4059281/segmentator_ckpt"
 }

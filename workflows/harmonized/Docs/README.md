@@ -78,6 +78,7 @@ model's SNOMED CSV to build the dcmqi labelmap config.
 | `radiomicsMaxRoiMvox` | Skip radiomics (SEG still written) for any label whose ROI exceeds this many Mvoxels; default `5.0` (organs/lungs/liver are < ~3 Mvox, a whole-body mask is 10–60). Skipped labels are listed in the radiomics JSON with a `radiomics_skipped` reason and counted in `output_conversion_UsageMetrics.csv` / `run_summary.json`. `<= 0` disables. |
 | `outputConversionJuliaThreads` | Julia threads for the Radiomics.jl worker (`0` = all vCPUs). |
 | `inputUri` / `secretProject` | Private-GCS input (optional). |
+| `checkpointGcsPath` | GCS prefix (e.g. the workspace bucket, `gs://fc-<id>/segmentator_ckpt`) for checkpoint/resume of the preemptible GPU task: nb1 bundles the converted NIfTIs there once, nb2 saves each finished (series, model) output, nb3 saves each finished series' DICOM-SEG + radiomics; a preempted VM's retry restores them and skips the done work (`checkpoint_restored` column in the usage-metrics CSVs); the run's prefix is deleted on success. Namespaced by the Cromwell workflow id, so different submissions never share state. Implemented in [`common/Notebooks/segmentator_checkpoint.py`](../../common/Notebooks/segmentator_checkpoint.py), fetched by the WDL next to the notebooks. Empty = disabled. |
 | `dicomSegBucketUri` / `dicomStoreImportUri` | GCS upload + Healthcare API import (optional). |
 
 ## Adding a new model
@@ -224,6 +225,4 @@ cheaper than pyradiomics on the same series.
   (`structured_reports_json.tar.lz4`), not `structured_reports_dicom.tar.lz4`.
 - **Base-image pinning**: the base pins pip deps by `==` but the CUDA base tag is not
   yet pinned by `@sha256` (follow the TotalSegmentator Dockerfile discipline before release).
-- **Checkpoint/resume** (`checkpointGcsPath`) is threaded through the WDL and nb2
-  parameter cells but not yet implemented in the split notebooks.
 - **CWL / SevenBridges** parity is out of scope for this iteration (WDL-first).

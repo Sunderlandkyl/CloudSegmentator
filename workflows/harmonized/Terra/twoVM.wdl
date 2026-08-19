@@ -104,7 +104,11 @@ workflow Segmentator {
 
     # ------------------------------------------------------------------------
     # OPTIONAL: checkpoint/resume on preemption (inference task)
-    # ------------------------------------------------------------------------
+    # GCS prefix (e.g. the workspace bucket: gs://fc-<id>/segmentator_ckpt). nb1 bundles
+    # the converted NIfTIs there once, nb2 saves each finished (series, model) output;
+    # a preempted VM's retry restores both and skips the done work; the run's prefix
+    # is deleted on success. Namespaced by the Cromwell workflow id. Empty = disabled.
+    # (Aug-2026 pilot: ~40 % of GPU VM-minutes were lost to preemption retries on a bad day.)
     String checkpointGcsPath = ""
 
     # ------------------------------------------------------------------------
@@ -196,7 +200,8 @@ workflow Segmentator {
       dicomSegBucketUri         = dicomSegBucketUri,
       dicomStoreImportUri       = dicomStoreImportUri,
       inputUri                  = inputUri,
-      secretProject             = secretProject
+      secretProject             = secretProject,
+      checkpointGcsPath         = checkpointGcsPath
   }
 
   output {
@@ -260,9 +265,23 @@ task inference {
     set -e
     RAW="https://raw.githubusercontent.com/~{gitRepo}/~{gitBranch}"
 
-    # ---- Fetch shared convert notebook (nb1) and model inference notebook (nb2)
+    # ---- Fetch shared convert notebook (nb1), model inference notebook (nb2) and the
+    #      checkpoint helper module both notebooks import (no-op unless checkpointGcsPath).
     wget -O convertNotebook.ipynb   "${RAW}/~{convertNotebookPath}"
     wget -O inferenceNotebook.ipynb "${RAW}/~{inferenceNotebookPath}"
+    wget -O segmentator_checkpoint.py "${RAW}/workflows/common/Notebooks/segmentator_checkpoint.py"
+
+    # ---- Checkpoint namespace = this workflow's Cromwell id, derived from the
+    #      auto-generated transfer scripts (same trick as the outputConversion task).
+    #      Stable across preemption retries of this call, unique per workflow, so a
+    #      retried VM resumes its own state and never another submission's.
+    RUN_ID=$(grep -hoE 'submissions/[0-9a-fA-F-]+/[^/]+/[0-9a-fA-F-]+/call-' ./*.sh 2>/dev/null \
+      | head -n1 | awk -F/ '{print $2"_"$4}')
+    if [ -z "$RUN_ID" ]; then
+      # Fallback: hash of the inputs (still stable across retries of the same inputs).
+      RUN_ID="inputs_$(printf '%s|%s|%s' "~{yamlListOfSeriesInstanceUIDs}" "~{modelName}" "~{inferenceParamsYaml}" | md5sum | cut -c1-16)"
+    fi
+    echo "Derived RUN_ID=$RUN_ID (checkpointGcsPath='~{checkpointGcsPath}')"
 
     # Model-specific papermill params (optional). Guarantee a valid non-empty
     # YAML doc so `papermill -f` never chokes on an empty file.
@@ -279,6 +298,8 @@ YAML
       -y "~{yamlListOfSeriesInstanceUIDs}" \
       -p input_uri "~{inputUri}" \
       -p secret_project "~{secretProject}" \
+      -p checkpoint_gcs "~{checkpointGcsPath}" \
+      -p run_id "$RUN_ID" \
       || {
         >&2 echo "Convert task failed"
         [ -f download_error_file.txt ] && { >&2 echo "----- download_error_file.txt -----"; cat download_error_file.txt >&2; }
@@ -298,6 +319,7 @@ YAML
       -p model_name "~{modelName}" \
       -p accelerator "cuda" \
       -p checkpoint_gcs "~{checkpointGcsPath}" \
+      -p run_id "$RUN_ID" \
       || {
         >&2 echo "Inference task failed"
         [ -f inference_errors.txt ] && { >&2 echo "----- inference_errors.txt -----"; cat inference_errors.txt >&2; }
@@ -387,6 +409,7 @@ task outputConversion {
     String  dicomStoreImportUri
     String  inputUri
     String  secretProject
+    String  checkpointGcsPath
   }
 
   command <<<
@@ -414,6 +437,8 @@ task outputConversion {
     # image rebuild; errexit is off here, so a miss just leaves the notebook to
     # record a clear "driver not found" radiomics error.
     wget -O radiomics_jl_extract.jl "${RAW}/workflows/common/Notebooks/radiomics_jl_extract.jl"
+    # Checkpoint helper (per-series SEG + radiomics resume; no-op unless checkpointGcsPath).
+    wget -O segmentator_checkpoint.py "${RAW}/workflows/common/Notebooks/segmentator_checkpoint.py"
 
     # snomedMappingPath may be empty when the model bundles its own SNOMED table
     # into the segmentation archive (e.g. MOOSE ships moosez's
@@ -437,7 +462,8 @@ task outputConversion {
       -p inferenceUsageMetricsCsvPath "~{inferenceUsageMetricsCsv}"       -p convertUsageMetricsCsvPath "~{default='' convertUsageMetricsCsv}" \
       -p input_uri "~{inputUri}" \
       -p secret_project "~{secretProject}" \
-      -p runId "$RUN_ID"; then
+      -p runId "$RUN_ID" \
+      -p checkpointGcs "~{checkpointGcsPath}"; then
       >&2 echo "Output-conversion notebook failed"
       [ -f dicom_seg_error_file.txt ] && { >&2 echo "----- dicom_seg_error_file.txt -----"; cat dicom_seg_error_file.txt >&2; }
       exit 1
