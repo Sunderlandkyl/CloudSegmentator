@@ -11,6 +11,8 @@ make_terra_manifest.py  idc-index cohort -> designed pilot TSV + full-run TSV (T
 submission_cost.py      one Terra submission -> per-task metadata, billing $, per-series timings + features
 idc_features.py         SeriesInstanceUID -> slices / rows / cols / voxels / MB / collection (idc-index)
 cost_model.py           fit | predict | evaluate | report  (+ figures)
+radiomics_compare.py    2+ runs' radiomics outputs (any engine/vintage) -> metric inventory,
+                        missing-metric + agreement tables, outlier/duplicate detection, plots
 ```
 
 All scripts are plain Python 3 (`pandas`, `numpy`, `idc-index`; `matplotlib` optional for
