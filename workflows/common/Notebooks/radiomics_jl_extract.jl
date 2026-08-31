@@ -94,7 +94,19 @@ function extract(ref_path::AbstractString, seg_path::AbstractString, labels::Vec
 
     ref = niread(ref_path)
     seg = niread(seg_path)
-    img = ref.raw            # documented Radiomics.jl usage (raw stored intensities)
+    # Apply the NIfTI intensity rescale (scl_slope/scl_inter). CT NIfTIs from
+    # dcm2niix store shifted ints in the raw voxels (e.g. HU + 1024 with
+    # scl_inter = -1024); pyradiomics (via SimpleITK) applies this scaling, so
+    # skipping it here offsets every location feature (mean, min, percentiles,
+    # energy, ...) while leaving shift-invariant ones (variance, skewness)
+    # untouched. NIfTI spec: scl_slope == 0 means "no scaling stored".
+    slope = Float64(ref.header.scl_slope)
+    inter = Float64(ref.header.scl_inter)
+    img = if isfinite(slope) && slope != 0.0 && !(slope == 1.0 && inter == 0.0)
+        Float32.(ref.raw) .* Float32(slope) .+ Float32(inter)
+    else
+        ref.raw
+    end
     mask = seg.raw
 
     if size(img) != size(mask)

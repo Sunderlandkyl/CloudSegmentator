@@ -91,10 +91,12 @@ workflow Segmentator {
     # expensive than firstorder+shape; unknown names are warned about and ignored.
     String radiomicsFeatureClasses = "firstorder,shape"
 
-    # Julia threads for the Radiomics.jl worker (radiomicsMethod=radiomicsjl only):
-    # 0 = auto (all vCPUs of the output-conversion VM). One Julia process serves the
-    # whole run; Radiomics.jl parallelises across labels when threads > 1.
-    Int outputConversionJuliaThreads = 0
+    # Julia threads for the Radiomics.jl worker (radiomicsMethod=radiomicsjl only).
+    # KEEP AT 1: Radiomics.jl's multi-label extraction has a data race with >1
+    # thread -- labels can receive another label's values or none at all
+    # (reproduced Aug 2026 on TotalSegmentator masks; clean at -t 1). 0 = auto
+    # (all vCPUs); only use that once the upstream race is fixed.
+    Int outputConversionJuliaThreads = 1
 
     # Skip radiomics for any label whose ROI exceeds this many Mvoxels (SEG is still
     # written). Radiomics cost scales with ROI size; whole-body masks (MOOSE clin_ct_body,
