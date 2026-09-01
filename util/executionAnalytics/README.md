@@ -10,7 +10,7 @@ region_prices.py        Cloud Billing Catalog -> per-region $/h for the workflow
 make_terra_manifest.py  idc-index cohort -> designed pilot TSV + full-run TSV (Terra data tables)
 submission_cost.py      one Terra submission -> per-task metadata, billing $, per-series timings + features
 idc_features.py         SeriesInstanceUID -> slices / rows / cols / voxels / MB / collection (idc-index)
-cost_model.py           fit | predict | evaluate | report  (+ figures)
+cost_model.py           fit | predict | batch | evaluate | report  (+ figures)
 radiomics_compare.py    2+ runs' radiomics outputs (any engine/vintage) -> metric inventory,
                         missing-metric + agreement tables, outlier/duplicate detection, plots
 ```
@@ -91,6 +91,14 @@ python submission_cost.py <pilot submission URL> --region-rates region_rates.jso
 python cost_model.py fit --workflows submission_<pilot>_workflows.csv --series submission_<pilot>_series.csv --out model_moose.json
 python cost_model.py predict --model model_moose.json --manifest moose_full_terra_data_table.tsv \
        --rates region_rates.json --region us-west4 --out predicted_moose_full.csv
+
+# 3b. Choose the batch size (series per entity) before building the full manifest:
+#     $/series vs n from the fitted model, under a calm (0/h) and the pilot's own preemption
+#     rate, with the chance of exhausting the WDL's preemptible tries (-> on-demand fallback)
+#     and the run's wall-clock at a given GPU-VM concurrency. $/series only falls with n --
+#     pick the knee, then set make_terra_manifest.py's voxel target to n x mean Mvox/series.
+python cost_model.py batch --model model_moose.json --n-series 300 --concurrency 8 \
+       --preempt-rate 0,2,4 --preemptible-tries 3 --plots figs_moose
 
 # 4. Run the full set; wait; measure; evaluate
 python submission_cost.py <full submission URL> --region-rates region_rates.json --label moose-full

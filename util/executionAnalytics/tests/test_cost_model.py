@@ -138,6 +138,28 @@ def test_rate_tables_from_fake_skus():
     assert ranked[0]["region"] == "us-central1"
 
 
+def test_batch_curve_monotone_and_preemption_exposure():
+    model = {"other_cost_per_workflow": 0.0, "tasks": {
+        "inference": {"time_done": {"coef": [10.0, 2.0, 0.01], "cols": ["nSeries", "Mvox"]},
+                      "eff_rate_hr": 0.2},
+        "outputConversion": {"time_done": {"coef": [8.0, -1.0, 0.1], "cols": ["nSeries", "Mvox"]},
+                             "eff_rate_hr": 0.06}}}
+    calm = cm.batch_curve(model, [1, 5, 20, 50], 40.0, [0.0], 3, 12.0, 2.2)
+    per = [r["costPerSeries"] for r in calm]
+    assert per == sorted(per, reverse=True)                       # fixed cost amortizes: only falls
+    # calm day: cost == rate x successful-attempt time exactly
+    r = calm[1]
+    t_inf, t_oc = 10 + 2 * 5 + 0.01 * 200, 8 - 5 + 0.1 * 200
+    assert abs(r["cost"] - (0.2 * t_inf + 0.06 * t_oc) / 60) < 1e-4   # cost is rounded to 4 dp
+    assert r["inference_expectedPreempt"] == 0 and r["inference_pExhaustTries"] == 0
+    churn = cm.batch_curve(model, [1, 5, 20, 50], 40.0, [3.0], 3, 12.0, 2.2)
+    for c, k in zip(churn, calm):
+        assert c["cost"] > k["cost"]
+    assert churn[-1]["inference_pExhaustTries"] > churn[0]["inference_pExhaustTries"]
+    assert abs(churn[2]["inference_expectedPreempt"] - 3.0 * (10 + 40 + 8) / 60) < 1e-6
+    assert abs(cm._poisson_tail(2.0, 3) - (1 - (1 + 2 + 2) * np.exp(-2))) < 1e-9
+
+
 if __name__ == "__main__":
     import tempfile
     for name, fn in list(globals().items()):
