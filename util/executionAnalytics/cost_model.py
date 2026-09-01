@@ -22,6 +22,9 @@ Subcommands
   fit       --workflows W.csv [W2.csv ...] [--series S.csv ...] --out model.json
   predict   --model model.json (--manifest table.tsv | --workflows W.csv)
             [--rates region_rates.json --region us-west4] --out predicted.csv
+  batch     --model model.json [--sizes 1,3,6,10,20] [--mvox-per-series 48 | --manifest T.tsv]
+            [--preempt-rate 0,1.9] [--preemptible-tries 3] [--n-series 300 --concurrency 8]
+            [--out batch.csv --plots DIR]     # $/series vs batch size + preemption exposure
   evaluate  --predicted predicted.csv --actual W.csv [--out evaluation.csv] [--plots DIR]
   report    --workflows W.csv [...] [--series S.csv ...] [--billing B.csv ...]
             [--model model.json] --plots DIR      # metrics + figures (cost vs series/voxels...)
@@ -227,6 +230,13 @@ def cmd_fit(args):
                 print(f"    preemption/retry overhead: {100 * tm['preempt_overhead']:.1f}% "
                       f"(attempts: {pd.to_numeric(wf[f'{t}_attempts'], errors='coerce').sum():.0f} "
                       f"for {len(wf)} workflows)")
+                if f"{t}_preempted" in wf.columns:
+                    npre = pd.to_numeric(wf[f"{t}_preempted"], errors="coerce").fillna(0).sum()
+                    # preemptions per hour of *useful* (successful-attempt) VM time: the rate
+                    # `batch` multiplies by time_done(n) to get expected preemptions per batch
+                    tm["preempt_per_done_hr"] = float(npre / (done.sum() / 60.0))
+                    print(f"    preemption rate: {npre:.0f} preemptions / {done.sum() / 60:.1f} "
+                          f"successful VM-hours = {tm['preempt_per_done_hr']:.2f}/h")
         cost_col = f"{t}_cost" if f"{t}_cost" in wf.columns else f"{t}_estCost"
         cost = pd.to_numeric(wf[cost_col], errors="coerce")
         tm["cost_col"] = cost_col
@@ -407,6 +417,171 @@ def cmd_predict(args):
           f"${tot / max(df['Mvox'].sum(), 1e-9):.5f}/Mvox   "
           f"{df['predRuntimeMin'].sum() / 60:.1f} total VM-hours")
     print(f"Wrote {args.out}")
+
+
+# ---------------------------------------------------------------------------
+# batch
+# ---------------------------------------------------------------------------
+def _poisson_tail(lam, k):
+    """P(X >= k) for X ~ Poisson(lam)."""
+    if lam <= 0:
+        return 0.0
+    return max(0.0, 1.0 - sum(math.exp(-lam) * lam ** i / math.factorial(i) for i in range(k)))
+
+
+def _lin(fit, n, mvox):
+    """Evaluate a fitted a + b*nSeries + c*Mvox at one point (fit may be reduced)."""
+    v = fit["coef"][0]
+    for c, b in zip(fit["cols"], fit["coef"][1:]):
+        v += b * (n if c == "nSeries" else mvox)
+    return v
+
+
+def batch_curve(model, sizes, mvox_per_series, preempt_rates, tries, restart_min, od_ratio):
+    """Cost per series as a function of batch size n, from a fitted model.
+
+    The billed-$ fit already embeds the pilot's own preemption overhead, so it cannot be
+    used as a preemption-free baseline. Instead each task is priced as
+
+        effective billed rate ($/VM-h)  x  [ successful-attempt time(n) + preemption losses ]
+
+    where time(n) is the ``time_done`` fit at (n, n*mvox_per_series). Preemptions arrive at
+    ``rate`` per successful VM-hour (Poisson), so a batch expects E = rate * t_done/60 of them.
+    Each one re-pays a restart (boot, image pull, weights, checkpoint restore; ``restart_min``)
+    plus ~half a series of in-flight work (checkpoint granularity is one series), and once
+    ``tries`` preemptions are used up Cromwell reruns the remainder (~half the task, on
+    average) on-demand at ``od_ratio`` x the spot rate.
+
+    Returns a list of row dicts, one per (n, rate).
+    """
+    rows = []
+    other = model.get("other_cost_per_workflow", 0.0)
+    for n in sizes:
+        mv = n * mvox_per_series
+        for rate in preempt_rates:
+            row = {"nSeries": n, "Mvox": round(mv, 1), "preemptRatePerHr": rate}
+            tot, tot_done_min, tot_min = other, 0.0, 0.0
+            for t, tm in model["tasks"].items():
+                fit_done = tm.get("time_done") or tm["time"]
+                t_done = max(_lin(fit_done, n, mv), 0.0)
+                eff = tm.get("eff_rate_hr") or 0.0
+                a0 = fit_done["coef"][0]                          # fixed part of the task
+                lost_per_preempt = restart_min + 0.5 * max(t_done - a0, 0.0) / n
+                expected = rate * t_done / 60.0
+                p_exhaust = _poisson_tail(expected, tries)
+                extra_min = min(expected, tries) * lost_per_preempt
+                od_min = p_exhaust * 0.5 * t_done                # rerun remainder on-demand
+                cost = eff * (t_done + extra_min) / 60.0 + eff * od_min / 60.0 * (od_ratio - 1)
+                row[f"{t}_doneMin"] = round(t_done, 1)
+                row[f"{t}_expectedPreempt"] = round(expected, 2)
+                row[f"{t}_pExhaustTries"] = round(p_exhaust, 3)
+                row[f"{t}_cost"] = round(cost, 4)
+                tot += cost
+                tot_done_min += t_done
+                tot_min += t_done + extra_min + od_min
+            row["cost"] = round(tot, 4)
+            row["costPerSeries"] = round(tot / n, 5)
+            row["costPerMvox"] = round(tot / mv, 6) if mv else None
+            row["doneMin"] = round(tot_done_min, 1)
+            row["expectedMin"] = round(tot_min, 1)
+            rows.append(row)
+    return rows
+
+
+def plot_batch(rows, tasks, tries, outdir):
+    plt = _plt()
+    if plt is None:
+        return
+    df = pd.DataFrame(rows)
+    rates = sorted(df["preemptRatePerHr"].unique())
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
+    for r in rates:
+        d = df[df["preemptRatePerHr"] == r].sort_values("nSeries")
+        axes[0].plot(d["nSeries"], d["costPerSeries"], marker="o", label=f"{r:.2g} preempt/h")
+        gpu = tasks[0]
+        axes[1].plot(d["nSeries"], d[f"{gpu}_pExhaustTries"], marker="o", label=f"{r:.2g} preempt/h")
+    axes[0].set(xlabel="series per batch", ylabel="$ per series", title="Unit cost vs batch size")
+    axes[0].set_ylim(bottom=0)
+    axes[0].grid(alpha=0.3)
+    axes[0].legend()
+    axes[1].set(xlabel="series per batch", ylabel=f"P(>= {tries} preemptions)",
+                title=f"{tasks[0]}: chance of on-demand fallback")
+    axes[1].set_ylim(0, 1)
+    axes[1].grid(alpha=0.3)
+    axes[1].legend()
+    fig.tight_layout()
+    Path(outdir).mkdir(parents=True, exist_ok=True)
+    fig.savefig(Path(outdir) / "batch_size.png", dpi=150)
+    plt.close(fig)
+    print(f"  wrote {Path(outdir) / 'batch_size.png'}")
+
+
+def cmd_batch(args):
+    with open(args.model) as f:
+        model = json.load(f)
+    tasks = list(model["tasks"])
+    pr = model["pilot"]
+    if args.mvox_per_series:
+        mvps = args.mvox_per_series
+        src = "--mvox-per-series"
+    elif args.manifest:
+        mf = load_manifest(args.manifest)
+        mvps = float(mf["Mvox"].sum() / max(mf["nSeries"].sum(), 1))
+        src = args.manifest
+    else:
+        mvps = pr["Mvox"] / max(pr["n_series"], 1)
+        src = "pilot mean"
+    sizes = [int(s) for s in args.sizes.split(",")]
+    if args.preempt_rate:
+        rates = [float(r) for r in args.preempt_rate.split(",")]
+    else:
+        pilot_rate = max((tm.get("preempt_per_done_hr") or 0.0) for tm in model["tasks"].values())
+        rates = [0.0] + ([round(pilot_rate, 2)] if pilot_rate > 0 else [])
+    rows = batch_curve(model, sizes, mvps, rates, args.preemptible_tries, args.restart_min,
+                       args.on_demand_ratio)
+
+    print(f"Batch-size curve from {args.model}  ({mvps:.1f} Mvox/series from {src}; "
+          f"preemptible tries {args.preemptible_tries}, restart {args.restart_min} min, "
+          f"on-demand {args.on_demand_ratio}x spot)")
+    for t, tm in model["tasks"].items():
+        fd = tm.get("time_done") or tm["time"]
+        print(f"  {t:<18} time {fmt_eq(fd, 'min')}  @ ${tm.get('eff_rate_hr') or 0:.4f}/h "
+              f"(pilot preemption rate {tm.get('preempt_per_done_hr', 0) or 0:.2f}/h, "
+              f"overhead {100 * tm.get('preempt_overhead', 0):.0f}%)")
+    print(f"  pilot batches were nSeries {pr['nSeries_range'][0]:.0f}-{pr['nSeries_range'][1]:.0f}; "
+          f"sizes beyond that are extrapolations of a linear fit.")
+    gpu = tasks[0]
+    for rate in rates:
+        sub = [r for r in rows if r["preemptRatePerHr"] == rate]
+        base = next((r for r in sub if r["nSeries"] == pr["nSeries_range"][1]), sub[0])
+        print(f"\n  preemption rate {rate:.2g}/h:")
+        print(f"    {'n':>4} {'$/series':>9} {'vs n=' + str(int(base['nSeries'])):>8} {'$/batch':>8} "
+              f"{'min/batch':>9} {'E[preempt]':>10} {'P(>=' + str(args.preemptible_tries) + ')':>8}"
+              + (f" {'run wall-h':>10}" if args.n_series else ""))
+        for r in sub:
+            line = (f"    {r['nSeries']:>4} {r['costPerSeries']:>9.4f} "
+                    f"{100 * (r['costPerSeries'] / base['costPerSeries'] - 1):>+7.0f}% {r['cost']:>8.3f} "
+                    f"{r['expectedMin']:>9.0f} {r[f'{gpu}_expectedPreempt']:>10.2f} "
+                    f"{r[f'{gpu}_pExhaustTries']:>8.0%}")
+            if args.n_series:
+                batches = math.ceil(args.n_series / r["nSeries"])
+                waves = math.ceil(batches / max(args.concurrency, 1))
+                queue = sum((tm.get("queue_min_mean") or 0.0) for tm in model["tasks"].values())
+                r["runWallHours"] = round(waves * (r["expectedMin"] + queue) / 60.0, 2)
+                r["runBatches"] = batches
+                line += f" {r['runWallHours']:>10.1f}"
+            print(line)
+    if args.n_series:
+        print(f"\n  run wall-clock = ceil(ceil({args.n_series}/n) / {args.concurrency} concurrent VMs) "
+              f"waves x (batch time + mean queue); batches inside a wave run in parallel.")
+    print("\n  $/series only falls with n (fixed per-VM cost amortizes); what bounds n from above is\n"
+          "  the on-demand fallback after the preemptible tries, wall-clock/GPU quota, disk, and the\n"
+          "  blast radius of one bad series. The churn scenario shifts the whole curve, not its knee.")
+    if args.out:
+        pd.DataFrame(rows).to_csv(args.out, index=False)
+        print(f"Wrote {args.out}")
+    if args.plots:
+        plot_batch(rows, tasks, args.preemptible_tries, args.plots)
 
 
 # ---------------------------------------------------------------------------
@@ -743,6 +918,24 @@ def main():
     p.add_argument("--region", help="target region (default: the pilot's)")
     p.add_argument("--out", default="predicted.csv")
     p.set_defaults(func=cmd_predict)
+
+    b = sub.add_parser("batch", help="$/series vs series-per-batch curve, with preemption scenarios")
+    b.add_argument("--model", required=True)
+    b.add_argument("--sizes", default="1,3,6,10,15,20,30,50", help="batch sizes to tabulate")
+    b.add_argument("--mvox-per-series", type=float, help="mean Mvox per series (default: pilot mean)")
+    b.add_argument("--manifest", help="alternative: take the mean Mvox/series from a Terra data table")
+    b.add_argument("--preempt-rate", help="comma list of preemptions per successful VM-hour "
+                   "(default: 0 and the pilot's own rate)")
+    b.add_argument("--preemptible-tries", type=int, default=3,
+                   help="WDL preemptible tries before on-demand fallback (default 3)")
+    b.add_argument("--restart-min", type=float, default=12.0,
+                   help="VM minutes lost per preemption: boot + pull + weights + checkpoint restore")
+    b.add_argument("--on-demand-ratio", type=float, default=2.2, help="on-demand / spot rate")
+    b.add_argument("--n-series", type=int, help="size of the planned run, for wall-clock estimates")
+    b.add_argument("--concurrency", type=int, default=8, help="concurrent GPU VMs (quota)")
+    b.add_argument("--out", help="CSV of the curve")
+    b.add_argument("--plots", help="directory for batch_size.png")
+    b.set_defaults(func=cmd_batch)
 
     e = sub.add_parser("evaluate", help="compare a prediction with the actual workflows CSV")
     e.add_argument("--predicted", required=True)
