@@ -7,10 +7,9 @@ output conversion are shared.
 
 > **Status: pre-release.** The framework, contracts, Dockerfiles, unified SNOMED
 > mappings, WDL, and all four notebooks are in place. It has **not yet been validated
-> end-to-end on Terra/GPU**, the `imagingdatacommons/segmentator-base` and per-model
-> images still need building/pushing, and DICOM SR (TID1500) encoding in nb3 is not
-> yet ported (see *Known gaps*). The legacy `workflows/MOOSE` and
-> `workflows/TotalSegmentator` pipelines remain the supported path until this is
+> end-to-end on Terra/GPU**, and the `imagingdatacommons/segmentator-base` and per-model
+> images still need building/pushing (see *Known gaps*). The legacy `workflows/MOOSE`
+> and `workflows/TotalSegmentator` pipelines remain the supported path until this is
 > validated.
 
 ## Architecture
@@ -24,7 +23,7 @@ Task 1  (GPU, per-model image)          Task 2  (CPU, output_conversion image)
 │ nb1  convert  (SHARED)         │      │ nb3  output conversion  (SHARED)  │
 │   DICOM → NIfTI                │      │   NIfTI seg → DICOM-SEG           │
 │        │ Boundary A            │      │   + pyradiomics                   │
-│        ▼                       │      │   + (SR: see Known gaps)          │
+│        ▼                       │      │   + DICOM SR (TID1500)            │
 │ nb2  inference  (PER-MODEL)    │ ───▶ │                                   │
 │   NIfTI → segmentations        │  B   │                                   │
 └───────────────────────────────┘      └───────────────────────────────────┘
@@ -72,7 +71,7 @@ model's SNOMED CSV to build the dcmqi labelmap config.
 | `snomedMappingPath` | Repo path to the model's unified SNOMED CSV. |
 | `inferenceParamsYaml` | Generic papermill passthrough for model knobs (`moose_models`, `fast`, …) — new models need **no WDL change**. |
 | `gitRepo` / `gitBranch` | Where notebooks + SNOMED CSV are fetched from (override for dev/fork branches). |
-| `runRadiomics` / `runStructuredReport` | Harmonized output toggles (nb3). |
+| `runRadiomics` / `runStructuredReport` | Harmonized output toggles (nb3). `runStructuredReport` emits one DICOM SR (TID1500, dcmqi `tid1500writer`) per SEG object (`structured_reports_dicom.tar.lz4`, meta-JSONs in `structured_reports_json.tar.lz4`), encoding each feature that has an IBSI quantity code + UCUM units in [`common/resources/radiomicsFeaturesMaps.csv`](../../common/resources/radiomicsFeaturesMaps.csv) — currently the first-order + shape classes; uncoded features (texture classes, engine extras) stay JSON-only. Requires `runRadiomics=true`. |
 | `radiomicsMethod` | Radiomics engine when `runRadiomics=true`: `pyradiomics` (default) or `radiomicsjl` (JuliaHealth-style [`pzaffino/Radiomics.jl`](https://github.com/pzaffino/Radiomics.jl)). One engine per run — see *Comparing radiomics engines*. |
 | `radiomicsFeatureClasses` | Comma-separated feature classes computed by whichever engine is selected, using engine-neutral pyradiomics-style names: `firstorder`, `shape`, `glcm`, `glrlm`, `glszm`, `ngtdm`, `gldm`, or `all`. Default `firstorder,shape`. Texture classes are much more expensive; unknown names are warned about and ignored. Recorded in `run_summary.json` as `radiomics_feature_classes`. |
 | `radiomicsMaxRoiMvox` | Skip radiomics (SEG still written) for any label whose ROI exceeds this many Mvoxels; default `5.0` (organs/lungs/liver are < ~3 Mvox, a whole-body mask is 10–60). Skipped labels are listed in the radiomics JSON with a `radiomics_skipped` reason and counted in `output_conversion_UsageMetrics.csv` / `run_summary.json`. `<= 0` disables. |
@@ -221,10 +220,9 @@ cheaper than pyradiomics on the same series.
 - **End-to-end Terra/GPU validation** has not been run yet.
 - **Docker images** (`segmentator-base`, `inference_moose`, `inference_totalseg`) still
   need building and pushing to Docker Hub before the presets resolve.
-- **DICOM SR (TID1500)** encoding in nb3 is not yet ported from
-  `TotalSegmentator/Notebooks/dicomsegAndRadiomicsSR_Notebook.ipynb`; `runStructuredReport`
-  currently emits only the radiomics-measurement JSON bundle
-  (`structured_reports_json.tar.lz4`), not `structured_reports_dicom.tar.lz4`.
+- **SR feature coverage**: only features with a coded row in
+  `common/resources/radiomicsFeaturesMaps.csv` (first-order + shape) appear in the
+  TID1500 SRs; texture-class features would need IBSI codes added to the CSV.
 - **Base-image pinning**: the base pins pip deps by `==` but the CUDA base tag is not
   yet pinned by `@sha256` (follow the TotalSegmentator Dockerfile discipline before release).
 - **CWL / SevenBridges** parity is out of scope for this iteration (WDL-first).

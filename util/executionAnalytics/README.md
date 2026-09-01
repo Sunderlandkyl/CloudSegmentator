@@ -136,8 +136,9 @@ digests, machine shapes, radiomics engine, region) and the pilot's feature range
 * nb1 `convert_UsageMetrics.csv` -- `download_s, download_dcm_files, download_mb, dcm2niix_s`
   per series (now a WDL output of the `inference` task and part of nb3's combined CSV).
 * nb2 `inference_UsageMetrics.csv` -- `model_inference_s` per (series, sub-model).
-* nb3 `output_conversion_UsageMetrics.csv` -- `model_seg_s, model_radiomics_s, n_labels,
-  ref_download_s, series_total_s, radiomics_method` per (series, model); `run_summary.json`.
+* nb3 `output_conversion_UsageMetrics.csv` -- `model_seg_s, model_radiomics_s, model_sr_s,
+  n_labels, ref_download_s, series_total_s, radiomics_method` per (series, model);
+  `run_summary.json`.
 * Cromwell call metadata (via the Terra API): start/end per attempt, runtime attributes,
   image digest -- what `_cost.csv` holds.
 
