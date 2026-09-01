@@ -1,0 +1,4 @@
+entity,nSeries,nSeriesWithFeatures,sumVoxels,sumSlices,sumSizeMb,Mvox,inference_predMin,inference_predCost,inference_predCostSd,outputConversion_predMin,outputConversion_predCost,outputConversion_predCostSd,predRuntimeMin,predCost,predCostLo95,predCostHi95,region,modelFile
+1,21,21,926624768.0,3297.0,1865.8897120000001,926.624768,30.26,0.1878,0.0986,41.9,0.0489,0.0168,72.16,0.2367,0.0407,0.4327,us-west4,model_totalseg_pilot2.json
+2,18,18,799934432.0,2551.0,1609.38701,799.934432,28.58,0.1682,0.0841,37.55,0.0437,0.0143,66.13,0.2119,0.0447,0.3791,us-west4,model_totalseg_pilot2.json
+3,21,21,906046784.0,3319.0,1823.6711919999998,906.046784,30.38,0.1869,0.0984,40.36,0.0471,0.0168,70.74,0.234,0.0384,0.4297,us-west4,model_totalseg_pilot2.json

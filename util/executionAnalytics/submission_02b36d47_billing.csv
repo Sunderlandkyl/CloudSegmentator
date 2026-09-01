@@ -1,0 +1,346 @@
+workflowId,entity,wdlTask,category,service,sku,gross,net,usageAmount,usageUnit
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0726,0.0726,0.4544,hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0491,0.0491,0.3072,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.047,0.047,0.2939,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0419,0.0419,0.2625,hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0368,0.0368,0.2303,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0337,0.0337,0.2111,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0273,0.0273,1.9356,hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0259,0.0259,0.1619,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0257,0.0257,0.1608,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0216,0.0216,2.3233,hour
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0201,0.0201,2.1644,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0193,0.0193,0.9636,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0187,0.0187,1.3306,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0184,0.0184,1.3086,hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,GPU,Compute Engine,Nvidia Tesla T4 GPU attached to Spot Preemptible VMs running in Las Vegas,0.0175,0.0175,0.1094,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0148,0.0148,1.0503,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0146,0.0146,7.7433,gibibyte hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0146,0.0146,1.0367,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0145,0.0145,0.7255,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0119,0.0119,0.845,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0116,0.0116,9.2947,gibibyte hour
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0108,0.0108,8.6592,gibibyte hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0101,0.0101,5.3244,gibibyte hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0099,0.0099,0.4955,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0099,0.0099,1.0672,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0099,0.0099,5.2344,gibibyte hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0098,0.0098,0.6967,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0091,0.0091,0.6436,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0079,0.0079,4.2019,gibibyte hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0078,0.0078,4.1475,gibibyte hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0067,0.0067,0.7239,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0064,0.0064,3.3803,gibibyte hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0062,0.0062,0.3123,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,vCPU,Compute Engine,Spot Preemptible Custom Instance Core running in Las Vegas,0.0062,0.0062,0.4378,hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0061,0.0061,0.6614,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0061,0.0061,0.6592,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0053,0.0053,4.2694,gibibyte hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0053,0.0053,2.7875,gibibyte hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0049,0.0049,2.575,gibibyte hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.004,0.004,0.1986,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0037,0.0037,0.395,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0036,0.0036,0.1813,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0036,0.0036,2.8956,gibibyte hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.0036,0.0036,0.385,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0035,0.0035,0.0321,gibibyte month
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0034,0.0034,0.0305,gibibyte month
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,RAM,Compute Engine,Spot Preemptible Custom Instance Ram running in Las Vegas,0.0033,0.0033,1.7517,gibibyte hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0033,0.0033,2.6458,gibibyte hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0033,0.0033,2.6375,gibibyte hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,vCPU,Compute Engine,Spot Preemptible N2D AMD Instance Core running in Las Vegas,0.003,0.003,0.3242,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.003,0.003,0.0269,gibibyte month
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0023,0.0023,0.1136,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0021,0.0021,0.0187,gibibyte month
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.002,0.002,1.5808,gibibyte hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0019,0.0019,0.0177,gibibyte month
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0019,0.0019,1.5406,gibibyte hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0017,0.0017,0.0154,gibibyte month
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0017,0.0017,0.0151,gibibyte month
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0016,0.0016,0.015,gibibyte month
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,RAM,Compute Engine,Spot Preemptible N2D AMD Instance Ram running in Las Vegas,0.0016,0.0016,1.2972,gibibyte hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0015,0.0015,0.5808,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0014,0.0014,0.0329,gibibyte month
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0014,0.0014,0.0702,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0014,0.0014,0.0123,gibibyte month
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0014,0.0014,0.5411,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0013,0.0013,0.011,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0012,0.0012,0.0111,gibibyte month
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0012,0.0012,0.01,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0011,0.0011,0.4544,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0011,0.0011,0.0102,gibibyte month
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0011,0.0011,0.0101,gibibyte month
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0011,0.0011,0.0098,gibibyte month
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0011,0.0011,0.0097,gibibyte month
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.001,0.001,0.0509,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.001,0.001,0.0228,gibibyte month
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0009,0.0009,0.0215,gibibyte month
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0009,0.0009,0.0072,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0008,0.0008,0.0185,gibibyte month
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0008,0.0008,0.0182,gibibyte month
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0008,0.0008,0.3072,hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0007,0.0007,0.0068,gibibyte month
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0007,0.0007,0.2939,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0007,0.0007,0.0157,gibibyte month
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0007,0.0007,0.0061,gibibyte month
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0007,0.0007,0.2667,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0007,0.0007,0.015,gibibyte month
+3960421f-4709-4417-a638-8abd096cab99,6,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0007,0.0007,0.2625,hour
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0007,0.0007,0.0149,gibibyte month
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0006,0.0006,0.0054,gibibyte month
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0006,0.0006,0.0135,gibibyte month
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0006,0.0006,0.2303,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0006,0.0006,0.0046,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0005,0.0005,0.0123,gibibyte month
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0005,0.0005,0.2111,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0005,0.0005,0.0043,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Disk,Compute Engine,Balanced PD Capacity in Las Vegas,0.0005,0.0005,0.0046,gibibyte month
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0005,0.0005,0.1808,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0004,0.0004,0.0035,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0004,0.0004,0.1653,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0004,0.0004,0.1647,hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0004,0.0004,0.1619,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0004,0.0004,0.1608,hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0004,0.0004,0.0083,gibibyte month
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0003,0.0003,0.0075,gibibyte month
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0003,0.0003,0.0025,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0003,0.0003,0.1094,hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0003,0.0003,0.0023,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0003,0.0003,0.0021,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0003,0.0003,0.0021,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0002,0.0002,0.0986,hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0002,0.0002,0.0961,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0002,0.0002,0.0018,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0002,0.0002,0.005,gibibyte month
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0002,0.0002,0.0048,gibibyte month
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0002,0.0002,0.0048,gibibyte month
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,External IP,Compute Engine,External IP Charge on a Spot Preemptible VM,0.0002,0.0002,0.0808,hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0002,0.0002,0.0016,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0002,0.0002,0.0089,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0002,0.0002,0.0014,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0002,0.0002,0.0013,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0001,0.0001,0.003,gibibyte month
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.001,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0001,0.0001,0.0027,gibibyte month
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Disk,Compute Engine,Storage PD Capacity in Las Vegas,0.0001,0.0001,0.0022,gibibyte month
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0008,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0038,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0006,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0035,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Internet Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0005,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0026,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0001,0.0001,0.0025,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0,0.0,0.0024,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0,0.0,0.0015,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0,0.0,0.0009,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer Out from Las Vegas to Americas,0.0,0.0,0.0006,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.5472,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,2.4194,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,2.9028,hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.8264,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,1.0556,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.8236,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.8042,hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.8708,hour
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,2.7056,hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.4931,hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,1.6625,hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.4806,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,1.6347,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.3269,hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.4839,hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.3325,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.1608,hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.1094,hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.1742,hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.2111,hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,9.2889,gibibyte hour
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,8.6578,gibibyte hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,1.5378,gibibyte hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,5.2311,gibibyte hour
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,2.7867,gibibyte hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,7.7422,gibibyte hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,1.7511,gibibyte hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,5.32,gibibyte hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,2.6356,gibibyte hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,2.5733,gibibyte hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,1.5778,gibibyte hour
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,3.3778,gibibyte hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,2.6444,gibibyte hour
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Australia to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,1.2944,hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.2589,hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,4.1422,gibibyte hour
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,14.6544,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.025,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.1178,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,1.3333,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,1.3125,hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.4042,hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Other,Compute Engine,Licensing Fee for Container-Optimized OS from Google (CPU cost),0.0,0.0,0.9042,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,GPU,Compute Engine,Licensing Fee for Container-Optimized OS from Google (GPU cost),0.0,0.0,0.2625,hour
+3960421f-4709-4417-a638-8abd096cab99,6,inference,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,4.2,gibibyte hour
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,2.8933,gibibyte hour
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,1.2933,gibibyte hour
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,RAM,Compute Engine,Licensing Fee for Container-Optimized OS from Google (RAM cost),0.0,0.0,4.2667,gibibyte hour
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,12.2675,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.5355,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,19.9145,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.2204,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.1343,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,6.4351,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,6.4352,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,6.4445,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.0898,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,6.435,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,6.4399,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.2903,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.1254,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.194,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.0568,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.003,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0157,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0488,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0023,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0022,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0566,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0021,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0229,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0018,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0024,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0035,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0096,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0215,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0019,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0294,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from APAC to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from APAC to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from APAC to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from APAC to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from APAC to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Delhi to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Hong Kong to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Montreal to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Toronto to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Virginia to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Africa to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer In from Africa to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Internet Data Transfer In from Africa to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Africa to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Internet Data Transfer In from Africa to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.2006,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.6863,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0447,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0442,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.5096,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,1.0227,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.345,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.1189,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.169,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.5096,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.3447,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.3438,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.2013,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,1.0208,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.1685,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Internet Data Transfer In from Australia to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer In from Australia to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Australia to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Internet Data Transfer In from Middle East to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+ae6b33b3-2b35-42d5-b579-99c65f4a6204,4,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+578188db-156a-4da3-bc09-3b86d3c8de56,3,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+cdf577ef-ddf5-426b-9ab5-b6405bcbe22d,9,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+c46197c1-48fc-48bb-a0e6-fb2cfc54738d,1,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+3960421f-4709-4417-a638-8abd096cab99,6,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+5660b6af-0901-493a-99fb-9c17326d64a8,8,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+03bd2699-0a25-4821-b8b7-a59d58258df4,5,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,12.2668,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Data Transfer In from Google Services from Las Vegas to Las Vegas,0.0,0.0,1.067,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Data Transfer In via Carrier Peering Network - Americas Based,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.0168,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Data Transfer to Google Services from Las Vegas to Las Vegas,0.0,0.0,0.002,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Inter Region Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Inter Region Data Transfer In from Toronto to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Internet Data Transfer In from Africa to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0688,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Internet Data Transfer In from Americas to Las Vegas,0.0,0.0,0.0694,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Apac(Excluding Korea and Indonesia) to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Internet Data Transfer In from EMEA to Las Vegas,0.0,0.0,0.0,gibibyte
+35833674-a9bc-4a86-a596-4cb7e4e3b06f,2,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from Middle East to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,outputconversion,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
+11aca4c4-c284-423c-bb19-d03740265b2d,7,inference,Egress,Compute Engine,Network Internet Data Transfer In from South America to Las Vegas,0.0,0.0,0.0,gibibyte
