@@ -24,48 +24,26 @@ LABEL MAINTAINER="IDC <idc-support@cancerimagingarchive.net>" \
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
-# xvfb is required by TotalSegmentator 1.5.6's plotting/roi-subset path.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    xvfb \
-  && rm -rf /var/lib/apt/lists/*
-
-
-# TotalSegmentator's console-script entry point does `from pkg_resources import
-# require`. setuptools>=81 dropped pkg_resources entirely, and one of
-# TotalSegmentator/nnU-Net's transitive deps upgrades past the apt-provided
-# 68.1.2 (which still has it) — pin below 81 so the CLI has pkg_resources at
-# runtime.
-#
-# torch>=2.6 flipped torch.load's default to weights_only=True, which rejects
-# the numpy.core.multiarray.scalar global used by the baked nnU-Net checkpoints
-# (predates safetensors-style loading) — pin below 2.6 so nnU-Net can load them.
-#
-# nnUNetTrainer.py (from TotalSegmentator's pinned nnunet-customized==1.2 dep)
-# does an unconditional `import matplotlib`, but that package's own metadata
-# never lists matplotlib as a dependency — pip legitimately never installs it,
-# so every inference call crashes at import time unless it's added explicitly.
+# TotalSegmentator v2 (v2.17+ dropped the pkg_resources dependency and the
+# torch<2.6 requirement that forced pins on the v1.5.6 image; nnunetv2 and a
+# current torch resolve as normal dependencies).
 # Cache mount keyed on /root/.cache/pip: wheels already downloaded in a prior
 # build are reused even when this layer's own cache is invalidated (e.g. by a
-# BASE_IMAGE/BASE_TAG bump during dev iteration), without changing what ends
-# up installed or the final image size (the mount isn't part of the layer).
+# BASE_IMAGE/BASE_TAG bump during dev iteration).
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install \
-    "setuptools<81" \
-    "torch<2.6" \
-    matplotlib \
-    nvidia-ml-py3==7.352.0 \
-    TotalSegmentator==1.5.6
+    pip install TotalSegmentator==2.18.0
 
-# Bake TotalSegmentator v1.5.6 nnU-Net weights into the image so nothing is
-# fetched at job runtime.
-ENV TOTALSEG_WEIGHTS_PATH=/totalsegmentator_weights
-RUN mkdir -p $TOTALSEG_WEIGHTS_PATH
-COPY weights_download.sh /root/weights_download.sh
-# Strip any CR (Windows CRLF checkout) so the shebang isn't `/bin/bash\r`.
-RUN sed -i 's/\r$//' /root/weights_download.sh \
- && chmod +x /root/weights_download.sh
-# Same idea as the pip cache above: persist the downloaded weight zips across
-# builds so a cache miss on this layer re-unzips instead of re-downloading
-# ~5GB from GitHub releases every time.
-RUN --mount=type=cache,target=/weights_cache \
-    WEIGHTS_CACHE_DIR=/weights_cache /root/weights_download.sh
+# Bake the nnU-Net weights for the tasks the harmonized workflow exposes so
+# nothing is fetched at job runtime (v2 auto-downloads missing tasks, which we
+# do not want on a per-VM basis). TOTALSEG_HOME_DIR is v2's weights/config
+# root (replaces v1's TOTALSEG_WEIGHTS_PATH).
+#   total      - 117-class full-body model (tasks 291-295, 1.5 mm)
+#   total_fast - 3 mm model used by --fast and by v2's internal FOV cropping
+#                for subtasks (lung_vessels crops to the lung lobes with it)
+#   lung_vessels - task 117; v2 retrained this as 4 classes (lung_airways,
+#                lung_airways_wall, lung_arteries, lung_veins), no license
+# One RUN per task so Docker caches partial progress across network hiccups.
+ENV TOTALSEG_HOME_DIR=/totalsegmentator_weights
+RUN mkdir -p $TOTALSEG_HOME_DIR && totalseg_download_weights -t total
+RUN totalseg_download_weights -t total_fast
+RUN totalseg_download_weights -t lung_vessels

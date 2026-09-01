@@ -145,8 +145,10 @@ papermill common/Notebooks/outputConversionNotebook.ipynb out3.ipynb \
 ```
 For MOOSE, `snomedMappingPath` is omitted: nb2 bundles moosez's own
 `moose_snomed_mapping.csv` into the archive and nb3 reads that bundled copy.
-Models whose engine ships no SNOMED table (e.g. TotalSegmentator v1.5.6) instead
-pass a curated CSV, e.g. `-p snomedMappingPath models/totalseg/resources/snomed_mapping.csv`.
+Models that do not bundle a table into the archive (e.g. TotalSegmentator) instead
+pass a curated CSV, e.g. `-p snomedMappingPath models/totalseg/resources/snomed_mapping.csv`
+(derived from upstream's `totalsegmentator_snomed_mapping.csv`, plus rows for the
+v2 `lung_vessels` classes that upstream does not map).
 Confirm each archive matches the layout in *Contracts* above, and that
 `dicom_seg.tar.lz4` imported into a Healthcare API store renders in OHIF
 (`itkimage2segimage` preserves the source `StudyInstanceUID`).

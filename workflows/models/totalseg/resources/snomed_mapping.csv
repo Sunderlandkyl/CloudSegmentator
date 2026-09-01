@@ -169,3 +169,7 @@
 "total","liver_vessels","","SCT","123037004","Anatomical Structure","SCT","59820001","Blood vessel","","","","SCT","10200004","Liver","","","",""
 "total","liver_tumor","","SCT","49755003","Morphologically Altered Structure","SCT","108369006","Neoplasm","","","","SCT","10200004","Liver","","","",""
 "total","costal_cartilages","","SCT","123037004","Anatomical Structure","SCT","50016007","Costal cartilage","","","","","","","","","",""
+"lung_vessels","lung_airways","","SCT","123037004","Anatomical Structure","SCT","110726009","Trachea and bronchus","","","","SCT","39607008","Lung","","","","[190, 190, 190]"
+"lung_vessels","lung_airways_wall","","SCT","123037004","Anatomical Structure","SCT","110726009","Trachea and bronchus","","","","SCT","39607008","Lung","","","","[145, 145, 145]"
+"lung_vessels","lung_arteries","","SCT","123037004","Anatomical Structure","SCT","81040000","Pulmonary artery","","","","SCT","39607008","Lung","","","","[216, 101, 79]"
+"lung_vessels","lung_veins","","SCT","123037004","Anatomical Structure","SCT","122972007","Pulmonary vein","","","","SCT","39607008","Lung","","","","[0, 122, 171]"
