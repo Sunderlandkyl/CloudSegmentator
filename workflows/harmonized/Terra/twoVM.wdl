@@ -232,6 +232,7 @@ workflow Segmentator {
     File? inferenceErrors       = inference.inferenceErrors
     File? dicomSegErrors        = outputConversion.dicomSegErrors
     File? radiomicsErrors       = outputConversion.radiomicsErrors
+    File? srErrors              = outputConversion.srErrors
   }
 }
 
@@ -449,6 +450,10 @@ task outputConversion {
       wget -O snomed_mapping.csv "${RAW}/~{snomedMappingPath}"
     fi
 
+    # Feature -> DICOM quantity/units code mapping (IBSI + UCUM) for the TID1500
+    # SR writer. A miss just disables SR (recorded in sr_error_file.txt).
+    wget -O radiomicsFeaturesMaps.csv "${RAW}/workflows/common/resources/radiomicsFeaturesMaps.csv"
+
     if ! papermill outputConversionNotebook.ipynb outputConversionOutputNotebook.ipynb \
       -p segmentationArchivePath "~{segmentationArchive}" \
       -p snomedMappingPath "snomed_mapping.csv" \
@@ -457,6 +462,7 @@ task outputConversion {
       -p runStructuredReport ~{runStructuredReport} \
       -p radiomicsMethod "~{radiomicsMethod}" \
       -p radiomicsFeatureClasses "~{radiomicsFeatureClasses}" \
+      -p radiomicsFeatureCodesPath "radiomicsFeaturesMaps.csv" \
       -p radiomicsJlThreads ~{juliaThreads} \
       -p radiomicsMaxRoiMvox ~{maxRoiMvox} \
       -p dicomSegBucketUri "~{dicomSegBucketUri}" \
@@ -510,5 +516,6 @@ task outputConversion {
 
     File? dicomSegErrors  = "dicom_seg_error_file.txt"
     File? radiomicsErrors = "radiomics_error_file.txt"
+    File? srErrors        = "sr_error_file.txt"
   }
 }
