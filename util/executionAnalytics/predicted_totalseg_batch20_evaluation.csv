@@ -1,0 +1,4 @@
+entity,nSeries,Mvox,sumSlices,predCost,predCostLo95,predCostHi95,actualCost,absErr,pctErr,inInterval,predRuntimeMin,actualRuntimeMin,inference_predMin,inference_predCost,outputConversion_predMin,outputConversion_predCost,inference_runtimeMin,inference_estCost,outputConversion_runtimeMin,outputConversion_estCost
+1,21,926.624768,3297,0.2367,0.0407,0.4327,0.3658,0.12910000000000002,-35.29250956806999,True,72.16,161.43,30.26,0.1878,41.9,0.0489,111.31,0.3145,50.12,0.0513
+2,18,799.934432,2551,0.2119,0.0447,0.3791,0.2924,0.08049999999999999,-27.530779753761966,True,66.13,126.38,28.58,0.1682,37.55,0.0437,66.71,0.2312,59.67,0.0612
+3,21,906.046784,3319,0.234,0.0384,0.4297,0.2837,0.049699999999999994,-17.518505463517798,True,70.74,143.14,30.38,0.1869,40.36,0.0471,93.27,0.239,49.87,0.0447

@@ -1,0 +1,4 @@
+entity,workflowId,tier,actualCost,estCost,gpu,vcpuRam,disk,estVsActual
+1,b576b171-2dce-4348-b583-06effad57dad,spot,0.25,0.5796,0.3018,0.2545,0.0234,2.32
+2,ebb113c1-e729-44af-b9c9-8dc843d3277a,spot,0.22,0.4695,0.2247,0.2239,0.0209,2.13
+3,6dafd9db-a9e0-4b5f-b278-c840ee830f93,spot,0.23,0.5323,0.2781,0.2329,0.0214,2.31
