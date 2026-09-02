@@ -745,13 +745,24 @@ def plot_report(wf, se, bill, tasks, model, outdir):
             fig.suptitle("Per-series phase timings vs series size"); fig.tight_layout()
             p = outdir / "series_phase_timings.png"; fig.savefig(p, dpi=120); plt.close(fig); made.append(p)
 
-            # phase breakdown per workflow (stacked) + unexplained overhead
-            agg = se.groupby("workflowId")[cols].sum(min_count=1) / 60.0
+            # phase breakdown per workflow (stacked) + unexplained overhead.
+            # outputConversionSec is nb3's per-series TOTAL (it already contains
+            # refDownload/seg/radiomics); stacking it would double-count nb3, so
+            # stack its residual (SR write + NIfTI load/relabel glue) instead.
+            se2 = se.copy()
+            nb3_parts = [c for c in ("refDownloadSec", "segSec", "radiomicsSec") if c in cols]
+            stack_cols = list(cols)
+            if "outputConversionSec" in stack_cols and nb3_parts:
+                se2["nb3OtherSec"] = (pd.to_numeric(se2["outputConversionSec"], errors="coerce")
+                                      - se2[nb3_parts].apply(pd.to_numeric, errors="coerce").sum(axis=1)
+                                      ).clip(lower=0)
+                stack_cols[stack_cols.index("outputConversionSec")] = "nb3OtherSec"
+            agg = se2.groupby("workflowId")[stack_cols].sum(min_count=1) / 60.0
             wfo = wf.sort_values("Mvox")
             agg = agg.reindex(wfo["workflowId"]).fillna(0)
             fig, ax = plt.subplots(figsize=(max(6, 0.45 * len(agg) + 2), 4))
             bottom = np.zeros(len(agg))
-            for c in cols:
+            for c in stack_cols:
                 ax.bar(range(len(agg)), agg[c].to_numpy(), bottom=bottom, label=c)
                 bottom += agg[c].to_numpy()
             vm_cols = [f"{t}_vmMin" for t in tasks if f"{t}_vmMin" in wfo.columns]
