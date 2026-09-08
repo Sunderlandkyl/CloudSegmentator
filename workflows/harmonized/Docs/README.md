@@ -71,7 +71,7 @@ model's SNOMED CSV to build the dcmqi labelmap config.
 | `snomedMappingPath` | Repo path to the model's unified SNOMED CSV. |
 | `inferenceParamsYaml` | Generic papermill passthrough for model knobs (`moose_models`, `fast`, …) — new models need **no WDL change**. |
 | `gitRepo` / `gitBranch` | Where notebooks + SNOMED CSV are fetched from (override for dev/fork branches). |
-| `runRadiomics` / `runStructuredReport` | Harmonized output toggles (nb3). `runStructuredReport` emits one DICOM SR (TID1500, dcmqi `tid1500writer`) per SEG object (`structured_reports_dicom.tar.lz4`, meta-JSONs in `structured_reports_json.tar.lz4`), encoding each feature that has an IBSI quantity code + UCUM units in [`common/resources/radiomicsFeaturesMaps.csv`](../../common/resources/radiomicsFeaturesMaps.csv) — currently the first-order + shape classes; uncoded features (texture classes, engine extras) stay JSON-only. Requires `runRadiomics=true`. |
+| `runRadiomics` / `runStructuredReport` | Harmonized output toggles (nb3). `runStructuredReport` emits one DICOM SR (TID1500, dcmqi `tid1500writer`) per SEG object (`structured_reports_dicom.tar`, meta-JSONs in `structured_reports_json.tar`), encoding each feature that has an IBSI quantity code + UCUM units in [`common/resources/radiomicsFeaturesMaps.csv`](../../common/resources/radiomicsFeaturesMaps.csv) — currently the first-order + shape classes; uncoded features (texture classes, engine extras) stay JSON-only. Requires `runRadiomics=true`. |
 | `radiomicsMethod` | Radiomics engine when `runRadiomics=true`: `pyradiomics` (default) or `radiomicsjl` (JuliaHealth-style [`pzaffino/Radiomics.jl`](https://github.com/pzaffino/Radiomics.jl)). One engine per run — see *Comparing radiomics engines*. |
 | `radiomicsFeatureClasses` | Comma-separated feature classes computed by whichever engine is selected, using engine-neutral pyradiomics-style names: `firstorder`, `shape`, `glcm`, `glrlm`, `glszm`, `ngtdm`, `gldm`, or `all`. Default `firstorder,shape`. Texture classes are much more expensive; unknown names are warned about and ignored. Recorded in `run_summary.json` as `radiomics_feature_classes`. |
 | `radiomicsMaxRoiMvox` | Skip radiomics (SEG still written) for any label whose ROI exceeds this many Mvoxels; default `5.0` (organs/lungs/liver are < ~3 Mvox, a whole-body mask is 10–60). Skipped labels are listed in the radiomics JSON with a `radiomics_skipped` reason and counted in `output_conversion_UsageMetrics.csv` / `run_summary.json`. `<= 0` disables. |
@@ -140,7 +140,7 @@ papermill models/moose/Notebooks/inference.ipynb out2.ipynb \
   -p moose_models clin_ct_organs                         # → segmentations.tar.lz4
 papermill common/Notebooks/outputConversionNotebook.ipynb out3.ipynb \
   -p segmentationArchivePath segmentations.tar.lz4 \
-  -p modelName moose                                     # → dicom_seg.tar.lz4 + radiomics.tar.lz4
+  -p modelName moose                                     # → dicom_seg.tar + radiomics.tar
 ```
 For MOOSE, `snomedMappingPath` is omitted: nb2 bundles moosez's own
 `moose_snomed_mapping.csv` into the archive and nb3 reads that bundled copy.
@@ -149,7 +149,7 @@ pass a curated CSV, e.g. `-p snomedMappingPath models/totalseg/resources/snomed_
 (derived from upstream's `totalsegmentator_snomed_mapping.csv`, plus rows for the
 v2 `lung_vessels` classes that upstream does not map).
 Confirm each archive matches the layout in *Contracts* above, and that
-`dicom_seg.tar.lz4` imported into a Healthcare API store renders in OHIF
+`dicom_seg.tar` imported into a Healthcare API store renders in OHIF
 (`itkimage2segimage` preserves the source `StudyInstanceUID`).
 
 ## Comparing radiomics engines
