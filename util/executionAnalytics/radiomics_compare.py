@@ -111,7 +111,11 @@ def _iter_jsons(root):
 
 
 def _extract_archive(archive, dest):
-    """radiomics.tar.lz4 -> dest. Prefer the python lz4 module, else the CLI."""
+    """radiomics.tar[.lz4] -> dest. For .lz4, prefer the python lz4 module, else the CLI."""
+    if not str(archive).endswith(".lz4"):
+        with tarfile.open(str(archive)) as tar:
+            tar.extractall(dest)
+        return
     try:
         import lz4.frame
         with lz4.frame.open(str(archive), "rb") as fh:
@@ -128,8 +132,11 @@ def _extract_archive(archive, dest):
 def load_run(name, path, tmp_root):
     """-> {(series, model, label_id): {label_name, features{canon: float}}}"""
     p = Path(path)
-    if p.is_dir() and (p / "radiomics.tar.lz4").exists() and not any(p.rglob("*_0.json")):
-        p = p / "radiomics.tar.lz4"
+    if p.is_dir() and not any(p.rglob("*_0.json")):
+        for cand in ("radiomics.tar", "radiomics.tar.lz4"):
+            if (p / cand).exists():
+                p = p / cand
+                break
     if p.is_file():
         dest = Path(tmp_root) / name
         dest.mkdir(parents=True, exist_ok=True)
