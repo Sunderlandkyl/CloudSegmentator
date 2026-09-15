@@ -35,6 +35,7 @@ Usage (papermill parameters ``checkpoint_gcs`` / ``run_id`` come from the WDL)::
     done = ckpt.restore_series_outputs({"dicom_seg": D, "radiomics": R})   # nb3
     ckpt.save_series_output(uid, {"dicom_seg": D, "radiomics": R})        # nb3, per series
 """
+import json
 import shlex
 import subprocess
 import tempfile
@@ -250,6 +251,56 @@ class Checkpointer:
             return done
         return self._safe("series output restore", _do) or set()
 
+    # --------------------------------------------------------- attempt ledger
+    # A preempted VM cannot report its own death, so every attempt leaves a small
+    # progress record under attempts/<kind>/<id>.json (updated at phase / work-unit
+    # boundaries). The attempt that finally succeeds reads the others' records and
+    # can summarize the run INCLUDING its preempted predecessors: how long each ran
+    # (as of its last update), how many units it completed, its last phase and
+    # peak RAM. Records die with the run prefix on cleanup().
+    def attempt_start(self, kind):
+        """Register this VM attempt; call once, right after constructing the ckpt."""
+        if not self.enabled:
+            return
+        self._attempt = {"kind": kind, "id": str(int(time.time() * 1000)),
+                         "start_epoch": round(time.time(), 1), "elapsed_s": 0.0,
+                         "units_done": 0, "phase": "start", "peak_mem_gb": 0.0}
+        self.attempt_update()
+
+    def attempt_update(self, units_done=None, phase=None, peak_mem_gb=None):
+        """Refresh this attempt's ledger record (cheap: one small GCS write)."""
+        a = getattr(self, "_attempt", None)
+        if not self.enabled or a is None:
+            return
+        if units_done is not None:
+            a["units_done"] = units_done
+        if phase is not None:
+            a["phase"] = phase
+        if peak_mem_gb:
+            a["peak_mem_gb"] = max(a["peak_mem_gb"], round(float(peak_mem_gb), 2))
+        a["elapsed_s"] = round(time.time() - a["start_epoch"], 1)
+
+        def _do():
+            self._blob(f"attempts/{a['kind']}/{a['id']}.json").upload_from_string(
+                json.dumps(a), content_type="application/json")
+        self._safe("attempt ledger update", _do)
+
+    def prior_attempts(self, kind):
+        """Records left by earlier attempts of this run (preempted / failed VMs),
+        oldest first. Read this BEFORE cleanup()."""
+        if not self.enabled:
+            return []
+
+        def _do():
+            me = getattr(self, "_attempt", {}).get("id")
+            recs = []
+            for n in self._list(f"attempts/{kind}"):
+                if not n.endswith(".json") or n[:-len(".json")] == me:
+                    continue
+                recs.append(json.loads(self._blob(f"attempts/{kind}/{n}").download_as_text()))
+            return sorted(recs, key=lambda r: r.get("start_epoch", 0))
+        return self._safe("attempt ledger read", _do) or []
+
     # ---------------------------------------------------------------- cleanup
     def cleanup(self):
         """Delete everything under <checkpoint_gcs>/<run_id>/ (call on success)."""
@@ -262,3 +313,54 @@ class Checkpointer:
                 b.delete()
             self._log(f"cleaned up {len(blobs)} checkpoint object(s) under {self.uri}")
         self._safe("cleanup", _do)
+
+
+class MemSampler:
+    """Background system-RAM peak sampler (/proc/meminfo; used = MemTotal-MemAvailable).
+
+    Answers "how close did this VM sail to the memory ceiling" — the question the
+    Sep-2026 lung_vessels livelock (14 GiB peak on a 16 GB swapless VM) needed a
+    local repro to answer. `peak_gb` is the whole-run peak; `mark()` +
+    `window_peak_gb()` bracket one work unit (a series / a task) for per-unit
+    attribution. Linux-only: silently reports zeros where /proc/meminfo is absent.
+    The sampler thread is a daemon — no explicit stop needed.
+    """
+
+    def __init__(self, interval_s=5.0):
+        self.peak_gb = 0.0
+        self._window_gb = 0.0
+        self._ok = Path("/proc/meminfo").exists()
+        if self._ok:
+            import threading
+            threading.Thread(target=self._loop, args=(float(interval_s),),
+                             daemon=True).start()
+
+    @staticmethod
+    def _read_gb():
+        total = avail = 0
+        for line in Path("/proc/meminfo").read_text().splitlines():
+            if line.startswith("MemTotal:"):
+                total = int(line.split()[1])
+            elif line.startswith("MemAvailable:"):
+                avail = int(line.split()[1])
+        return max(total - avail, 0) / (1024.0 * 1024.0)
+
+    def _loop(self, interval_s):
+        while True:
+            try:
+                g = self._read_gb()
+                self.peak_gb = max(self.peak_gb, g)
+                self._window_gb = max(self._window_gb, g)
+            except Exception:
+                pass
+            time.sleep(interval_s)
+
+    def mark(self):
+        """Start a new attribution window (e.g. before one series / task)."""
+        try:
+            self._window_gb = self._read_gb() if self._ok else 0.0
+        except Exception:
+            self._window_gb = 0.0
+
+    def window_peak_gb(self):
+        return round(self._window_gb, 2)
