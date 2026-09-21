@@ -80,7 +80,7 @@ summaries, error files. Known failure modes (do NOT treat as new):
 | Signature | Meaning |
 |---|---|
 | `itkimage2segimage ... Invalid Value` | Series class (~2 % of series) failing SEG for **all models, both engines**. Known: `...69653227`, `...730074`, `...891272`, `...222052`. Unfixed; needs dcmqi repro. |
-| `radiomics_jl_extract.jl ... NaN not allowed` | Known Radiomics.jl bug; drops one (series, model) radiomics + SR. Fix identified (write null), unimplemented. |
+| `radiomics_jl_extract.jl ... NaN not allowed` | NaN feature (e.g. 1-voxel label std/skew/kurtosis) dropped one (series, model) radiomics + SR. Fixed Sep 21 2026 (driver skips non-finite values); should not appear in newer runs. |
 | `body_composition: moose produced no output` | Anatomical (no L3 in FOV) — benign. |
 | `Radiomics.jl worker crashed twice` | nb3 RAM pressure on a giant series. |
 | Missing lungs/ribs/lung_vessels files for a series | Empty mask outside FOV — by design, not an error. |

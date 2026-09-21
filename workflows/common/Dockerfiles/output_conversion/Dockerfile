@@ -101,4 +101,7 @@ ENV JULIA_NUM_THREADS=auto
 # Install + precompile at build time so runtime avoids first-use precompilation.
 # pzaffino/Radiomics.jl is the registered package `Radiomics` (pinned for
 # reproducibility, matching the rest of this image); NIfTI + JSON back the driver.
-RUN julia -e 'import Pkg; Pkg.add([Pkg.PackageSpec(name="Radiomics", version="1.3.3"), Pkg.PackageSpec(name="NIfTI"), Pkg.PackageSpec(name="JSON")]); Pkg.precompile()'
+# >= 2.0.0 is required for threads > 1: earlier releases have a multi-label data
+# race (fixed upstream in PR #34). CUDA support is an optional weak dependency
+# that is not installed here, so this stays CPU-only.
+RUN julia -e 'import Pkg; Pkg.add([Pkg.PackageSpec(name="Radiomics", version="2.0.0"),Pkg.PackageSpec(name="NIfTI"), Pkg.PackageSpec(name="JSON")]); Pkg.precompile()'
