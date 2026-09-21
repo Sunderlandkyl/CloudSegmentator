@@ -34,7 +34,7 @@
 # Contract of a result (consumed by nb3's _features_radiomicsjl): a JSON array of
 # per-label feature objects, each carrying an integer "label_id":
 #   [{"label_id": 1, "first_order_mean": 12.3, ...}, {"label_id": 2, ...}]
-# Only numeric feature values are emitted (non-scalar/diagnostic values dropped).
+# Only finite numeric feature values are emitted (non-scalar/diagnostic/NaN dropped).
 # ============================================================================
 
 using NIfTI
@@ -77,7 +77,11 @@ const SENTINEL = "@@RESULT "
 function _emit(out, lid, feats)
     d = Dict{String,Any}()
     for (k, v) in feats
-        if v isa Real          # keep numeric scalars only; JSON-clean + matches nb3 filter
+        # Keep finite numeric scalars only (matches nb3's filter). NaN/Inf must be
+        # dropped here: JSON.json throws on them, which would fail the whole request
+        # and lose every label of the seg file (e.g. a 1-voxel label has NaN
+        # standard_deviation/skewness/kurtosis).
+        if v isa Real && isfinite(v)
             d[String(k)] = v
         end
     end

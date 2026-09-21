@@ -95,7 +95,7 @@ each paired SR is in a +50 block.
 | `radiomicsMethod` | Radiomics engine when `runRadiomics=true`: `pyradiomics` (default) or `radiomicsjl` (JuliaHealth-style [`pzaffino/Radiomics.jl`](https://github.com/pzaffino/Radiomics.jl)). One engine per run — see *Comparing radiomics engines*. |
 | `radiomicsFeatureClasses` | Comma-separated feature classes computed by whichever engine is selected, using engine-neutral pyradiomics-style names: `firstorder`, `shape`, `glcm`, `glrlm`, `glszm`, `ngtdm`, `gldm`, or `all`. Default `firstorder,shape`. Texture classes are much more expensive; unknown names are warned about and ignored. Recorded in `run_summary.json` as `radiomics_feature_classes`. |
 | `radiomicsMaxRoiMvox` | Skip radiomics (SEG still written) for any label whose ROI exceeds this many Mvoxels; default `5.0` (organs/lungs/liver are < ~3 Mvox, a whole-body mask is 10–60). Skipped labels are listed in the radiomics JSON with a `radiomics_skipped` reason and counted in `output_conversion_UsageMetrics.csv` / `run_summary.json`. `<= 0` disables. |
-| `outputConversionJuliaThreads` | Julia threads for the Radiomics.jl worker. Default **`1`** — keep it there: Radiomics.jl < 2.0.0 has a multi-label data race with > 1 thread (labels receive another label's values, or none). 2.0.0 fixes the race (upstream PR #34) but still has an open single-slice-ROI regression, so the default stays at 1 until that is resolved. `0` = all vCPUs. |
+| `outputConversionJuliaThreads` | Julia threads for the Radiomics.jl worker. Default **`0`** = all vCPUs (Radiomics.jl parallelises across the labels of a seg file). Needs Radiomics.jl ≥ 2.0.0, which the `output_conversion` image pins: earlier releases have a multi-label data race with > 1 thread (labels receive another label's values, or none), fixed upstream in PR #34. Verified Sep 2026: 2.0.0 at 4 threads is bit-identical to 1.3.3 at 1 thread on 450 real labels. |
 | `inputUri` / `secretProject` | Private-GCS input (optional). |
 | `checkpointGcsPath` | GCS prefix (e.g. the workspace bucket, `gs://fc-<id>/segmentator_ckpt`) for checkpoint/resume of the preemptible GPU task: nb1 bundles the converted NIfTIs there once, nb2 saves each finished (series, model) output, nb3 saves each finished series' DICOM-SEG + radiomics; a preempted VM's retry restores them and skips the done work (`checkpoint_restored` column in the usage-metrics CSVs); the run's prefix is deleted on success. Namespaced by the Cromwell workflow id, so different submissions never share state. Implemented in [`common/Notebooks/segmentator_checkpoint.py`](../../common/Notebooks/segmentator_checkpoint.py), fetched by the WDL next to the notebooks. Empty = disabled. |
 | `dicomSegBucketUri` / `dicomStoreImportUri` | GCS upload + Healthcare API import (optional). The upload writes each SEG and its paired TID1500 SR side by side (`<SeriesInstanceUID>/<model>_<idx>_sr.dcm`), and the store import's `**.dcm` pattern picks up both. The GCS upload has been used in production runs; the **DICOM-store import has not been tested yet**. |
@@ -276,8 +276,10 @@ cheaper than pyradiomics on the same series.
 - **DICOM-store import** (`dicomStoreImportUri`) has never been exercised end-to-end.
 - **dcmqi `Invalid Value`**: ~2.4 % of series fail SEG conversion with this dcmqi error;
   they are recorded in `dicom_seg_error_file.txt` and the rest of the batch completes.
-- **Radiomics.jl threading**: see `outputConversionJuliaThreads`. The race fix in 2.0.0
-  cannot be used with > 1 thread until the single-slice-ROI regression is fixed upstream.
+- **Radiomics.jl single-slice ROIs**: labels confined to one slice are computed as 2D
+  (no `shape3d` features; `total_energy` misses the z spacing) — an upstream regression
+  in 1.3.3 that 2.0.0 still has, independent of the thread count. Unreported upstream;
+  see `common/Docs/radiomicsjl-upstream-issues/`.
 - **SR feature coverage**: only features with a coded row in
   `common/resources/radiomicsFeaturesMaps.csv` (first-order + shape) appear in the
   TID1500 SRs; texture-class features would need IBSI codes added to the CSV.
