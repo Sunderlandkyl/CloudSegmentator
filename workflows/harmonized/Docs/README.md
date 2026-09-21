@@ -21,14 +21,14 @@ Three notebooks, two hand-off contracts, one parameterized WDL
 
 ```
 Task 1  (GPU, per-model image)          Task 2  (CPU, output_conversion image)
-┌───────────────────────────────┐      ┌───────────────────────────────────┐
+┌────────────────────────────────┐      ┌───────────────────────────────────┐
 │ nb1  convert  (SHARED)         │      │ nb3  output conversion  (SHARED)  │
 │   DICOM → NIfTI                │      │   NIfTI seg → DICOM-SEG           │
 │        │ Boundary A            │      │   + pyradiomics                   │
 │        ▼                       │      │   + DICOM SR (TID1500)            │
-│ nb2  inference  (PER-MODEL)    │ ───▶ │                                   │
+│ nb2  inference  (PER-MODEL)    │ ---> │                                   │
 │   NIfTI → segmentations        │  B   │                                   │
-└───────────────────────────────┘      └───────────────────────────────────┘
+└────────────────────────────────┘      └───────────────────────────────────┘
 ```
 
 - **nb1** [`common/Notebooks/convertNotebook.ipynb`](../../common/Notebooks/convertNotebook.ipynb) — download (IDC or private GCS) + `dcm2niix`.
