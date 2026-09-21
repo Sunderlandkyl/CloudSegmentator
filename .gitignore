@@ -15,3 +15,6 @@ Icon
 gha-creds-*.json
 
 
+
+# Terra billing exports (per-submission cost data; kept local)
+*_billing.csv
