@@ -6,11 +6,13 @@ A single, model-agnostic Terra/WDL workflow that runs **any** segmentation model
 output conversion are shared.
 
 > **Status: pre-release.** The framework, contracts, Dockerfiles, unified SNOMED
-> mappings, WDL, and all four notebooks are in place. It has **not yet been validated
-> end-to-end on Terra/GPU**, and the `imagingdatacommons/segmentator-base` and per-model
-> images still need building/pushing (see *Known gaps*). The legacy `workflows/MOOSE`
-> and `workflows/TotalSegmentator` pipelines remain the supported path until this is
-> validated.
+> mappings, WDL, and all three notebooks are in place, and the workflow has been run
+> end-to-end on Terra/GPU for both MOOSE and TotalSegmentator (Sep 2026 batches, all
+> succeeded). The images are currently published under the dev `sunderlandkyl/*`
+> namespace and the presets fetch notebooks from the `harmonized_models` dev branch;
+> both need moving to `imagingdatacommons` / `main` before release (see *Known gaps*).
+> The legacy `workflows/MOOSE` and `workflows/TotalSegmentator` pipelines remain the
+> supported path until then.
 
 ## Architecture
 
@@ -45,18 +47,36 @@ convert_manifest.json
 ```
 <SeriesInstanceUID>/<model>/segmentations/*.nii.gz  # multilabel mask(s)
 <SeriesInstanceUID>/<model>/label_map.json          # {"model": ..., "labels": {label_id: label_name}}
+engine_provenance.json                              # {"engine": ..., "version": ...}
 ```
+`<model>` is one directory per sub-model: each MOOSE model (`clin_ct_organs`, …) or
+each TotalSegmentator task (`total`, `lung_vessels`).
 The `label_map.json` sidecar is emitted by nb2 **at inference time** (moosez's own
-`organ_indices`; TotalSegmentator's `class_map['total']`), so label IDs are always
+`organ_indices`; TotalSegmentator's `class_map[<task>]`), so label IDs are always
 authoritative and never hand-transcribed. nb3 joins each `label_name` against the
 model's SNOMED CSV to build the dcmqi labelmap config.
+
+`engine_provenance.json` records the inference engine and its package version
+(moosez / TotalSegmentator). nb3 stamps it into every SEG following the IDC
+convention: `SegmentAlgorithmName` `"MOOSE v<ver>"` / `"TotalSegmentator v<ver>"`, a
+versioned `SeriesDescription`, and `ContentCreatorName` `"IDC"`. Archives without the
+sidecar fall back to the `modelName` input, unversioned. Each derived object gets a
+distinct, run-stable `SeriesNumber`: MOOSE models keep their legacy slots 1–10,
+TotalSegmentator tasks take 11–13, unknown models overflow to the next free slot, and
+each paired SR is in a +50 block.
 
 ## Running on Terra
 
 1. Import `SegmentatorTwoVmWorkflowOnTerra` (registered in [`.dockstore.yml`](../../../.dockstore.yml)).
 2. Pick a model preset and set it as the workflow inputs:
-   - MOOSE: [`models/moose/inputs.moose.json`](../../models/moose/inputs.moose.json)
-   - TotalSegmentator: [`models/totalseg/inputs.totalseg.json`](../../models/totalseg/inputs.totalseg.json)
+   - MOOSE: [`models/moose/inputs.moose.json`](../../models/moose/inputs.moose.json) (all 10 `clin_ct_*` models)
+   - TotalSegmentator: [`models/totalseg/inputs.totalseg.json`](../../models/totalseg/inputs.totalseg.json) (`total` task)
+   - TotalSegmentator lung vessels: [`models/totalseg/inputs.totalseg_lung_vessels.json`](../../models/totalseg/inputs.totalseg_lung_vessels.json) (`lung_vessels` task)
+
+   The presets currently point `gitRepo`/`gitBranch` at the dev fork
+   (`Sunderlandkyl/CloudSegmentator` / `harmonized_models`) and the images at
+   `sunderlandkyl/*:main`; the WDL defaults are `ImagingDataCommons/CloudSegmentator` /
+   `main` and `imagingdatacommons/output_conversion:main`.
 3. Point `yamlListOfSeriesInstanceUIDs` at `this.SeriesInstanceUIDs` (or set `inputUri`
    + `secretProject` for a private GCS bucket — same HMAC/Secret-Manager setup as the
    legacy MOOSE workflow, see [`workflows/MOOSE/Docs/README.md`](../../MOOSE/Docs/README.md)).
@@ -69,22 +89,55 @@ model's SNOMED CSV to build the dcmqi labelmap config.
 | `inferenceDocker` | Per-model GPU image (`imagingdatacommons/inference_<model>`). |
 | `inferenceNotebookPath` | Repo path to the model's nb2. |
 | `snomedMappingPath` | Repo path to the model's unified SNOMED CSV. |
-| `inferenceParamsYaml` | Generic papermill passthrough for model knobs (`moose_models`, `fast`, …) — new models need **no WDL change**. |
+| `inferenceParamsYaml` | Generic papermill passthrough for model knobs — new models need **no WDL change**. See *Model knobs* below. |
 | `gitRepo` / `gitBranch` | Where notebooks + SNOMED CSV are fetched from (override for dev/fork branches). |
 | `runRadiomics` / `runStructuredReport` | Harmonized output toggles (nb3). `runStructuredReport` emits one DICOM SR (TID1500, dcmqi `tid1500writer`) per SEG object (`structured_reports_dicom.tar`, meta-JSONs in `structured_reports_json.tar`), encoding each feature that has an IBSI quantity code + UCUM units in [`common/resources/radiomicsFeaturesMaps.csv`](../../common/resources/radiomicsFeaturesMaps.csv) — currently the first-order + shape classes; uncoded features (texture classes, engine extras) stay JSON-only. Requires `runRadiomics=true`. |
 | `radiomicsMethod` | Radiomics engine when `runRadiomics=true`: `pyradiomics` (default) or `radiomicsjl` (JuliaHealth-style [`pzaffino/Radiomics.jl`](https://github.com/pzaffino/Radiomics.jl)). One engine per run — see *Comparing radiomics engines*. |
 | `radiomicsFeatureClasses` | Comma-separated feature classes computed by whichever engine is selected, using engine-neutral pyradiomics-style names: `firstorder`, `shape`, `glcm`, `glrlm`, `glszm`, `ngtdm`, `gldm`, or `all`. Default `firstorder,shape`. Texture classes are much more expensive; unknown names are warned about and ignored. Recorded in `run_summary.json` as `radiomics_feature_classes`. |
 | `radiomicsMaxRoiMvox` | Skip radiomics (SEG still written) for any label whose ROI exceeds this many Mvoxels; default `5.0` (organs/lungs/liver are < ~3 Mvox, a whole-body mask is 10–60). Skipped labels are listed in the radiomics JSON with a `radiomics_skipped` reason and counted in `output_conversion_UsageMetrics.csv` / `run_summary.json`. `<= 0` disables. |
-| `outputConversionJuliaThreads` | Julia threads for the Radiomics.jl worker (`0` = all vCPUs). |
+| `outputConversionJuliaThreads` | Julia threads for the Radiomics.jl worker. Default **`1`** — keep it there: Radiomics.jl < 2.0.0 has a multi-label data race with > 1 thread (labels receive another label's values, or none). 2.0.0 fixes the race (upstream PR #34) but still has an open single-slice-ROI regression, so the default stays at 1 until that is resolved. `0` = all vCPUs. |
 | `inputUri` / `secretProject` | Private-GCS input (optional). |
 | `checkpointGcsPath` | GCS prefix (e.g. the workspace bucket, `gs://fc-<id>/segmentator_ckpt`) for checkpoint/resume of the preemptible GPU task: nb1 bundles the converted NIfTIs there once, nb2 saves each finished (series, model) output, nb3 saves each finished series' DICOM-SEG + radiomics; a preempted VM's retry restores them and skips the done work (`checkpoint_restored` column in the usage-metrics CSVs); the run's prefix is deleted on success. Namespaced by the Cromwell workflow id, so different submissions never share state. Implemented in [`common/Notebooks/segmentator_checkpoint.py`](../../common/Notebooks/segmentator_checkpoint.py), fetched by the WDL next to the notebooks. Empty = disabled. |
-| `dicomSegBucketUri` / `dicomStoreImportUri` | GCS upload + Healthcare API import (optional). |
+| `dicomSegBucketUri` / `dicomStoreImportUri` | GCS upload + Healthcare API import (optional). The upload writes each SEG and its paired TID1500 SR side by side (`<SeriesInstanceUID>/<model>_<idx>_sr.dcm`), and the store import's `**.dcm` pattern picks up both. The GCS upload has been used in production runs; the **DICOM-store import has not been tested yet**. |
+| `inferenceCpus` / `inferenceRAM` | GPU VM shape; see *Sizing* below. |
+
+### Model knobs (`inferenceParamsYaml`)
+
+| Model | Knob | Default | Purpose |
+|---|---|---|---|
+| MOOSE | `moose_models` | `clin_ct_organs,clin_ct_ribs,clin_ct_vertebrae` | Comma-separated moosez models; each becomes a `<uid>/<model>/` dir. |
+| MOOSE | `series_timeout_s` | `1800` | Wall-clock cap per (series, worker launch). moosez runs in a worker subprocess per series, so a hung worker or native crash (e.g. kernel death) is recorded in `inference_errors.txt` for the in-flight model, and the worker is relaunched for the remaining models. `0` = no cap. |
+| TotalSegmentator | `task` | `total` | Comma/space-separated task list, e.g. `total,lung_vessels`, which share one VM's download/convert/boot cost. Each task gets its own `<uid>/<task>/` dir, label map, and checkpoint. |
+| TotalSegmentator | `fast` | `False` | 3 mm model; applies to the `total` task only. |
+| TotalSegmentator | `task_timeout_min` | `90` | Wall-clock cap per (series, task); a hung/livelocked task is killed and recorded as an inference error instead of burning the VM. `0` = no cap. |
+
+### Sizing
+
+- **`lung_vessels` needs ~14 GiB RAM** on large volumes. At the default
+  `inferenceRAM=16` it can livelock the VM (thrashing, not OOM-killed);
+  `task_timeout_min` bounds the damage, but give it more RAM.
+- Terra rounds the GPU VM up to a machine type that fits the RAM, so
+  `inferenceRAM=32` silently becomes a 6-vCPU VM (~+14 % $/series). Measured sweet
+  spots: **16 for MOOSE, 26 for TotalSegmentator** (including `lung_vessels`).
+
+### Run metrics
+
+Every notebook ends with a *Run metrics summary* cell: phase timers
+(unpack/restore/pack/upload), compute sums, peak RAM, errors, and every prior
+preempted or failed VM attempt of the same call (with its runtime, units done, last phase,
+and peak RAM). The attempt ledger is kept under the checkpoint prefix, so it needs
+`checkpointGcsPath`. The usage-metrics CSVs gain peak-RAM columns (append-only, so
+`util/executionAnalytics` stays compatible), and `run_summary.json` carries
+`phases_s`, `peak_mem_gb`, and prior-attempt counts (`prior_attempts`,
+`prior_preempted_attempts`, `prior_attempts_vm_s`).
 
 ## Adding a new model
 
 1. Write `models/<model>/Notebooks/inference.ipynb` — read `converted_nifti.tar.lz4`,
    run the model, emit `segmentations.tar.lz4` in the **Boundary-B** layout (multilabel
-   mask + `label_map.json`).
+   mask + `label_map.json`, plus `engine_provenance.json` so the SEGs carry a versioned
+   algorithm name). nb3's `SeriesNumber` table also needs a slot for the new model;
+   without one it overflows to the next free slot.
 2. Write `models/<model>/Dockerfile` — `FROM imagingdatacommons/segmentator-base` and add
    only the model framework + baked weights.
 3. Add `models/<model>/resources/snomed_mapping.csv` in the unified schema
@@ -217,9 +270,14 @@ cheaper than pyradiomics on the same series.
 
 ## Known gaps
 
-- **End-to-end Terra/GPU validation** has not been run yet.
-- **Docker images** (`segmentator-base`, `inference_moose`, `inference_totalseg`) still
-  need building and pushing to Docker Hub before the presets resolve.
+- **Release images / presets**: images are built and in use under `sunderlandkyl/*`;
+  they still need pushing as `imagingdatacommons/*`, and the presets need repointing
+  from the dev fork/branch to `ImagingDataCommons/CloudSegmentator` / `main`.
+- **DICOM-store import** (`dicomStoreImportUri`) has never been exercised end-to-end.
+- **dcmqi `Invalid Value`**: ~2.4 % of series fail SEG conversion with this dcmqi error;
+  they are recorded in `dicom_seg_error_file.txt` and the rest of the batch completes.
+- **Radiomics.jl threading**: see `outputConversionJuliaThreads`. The race fix in 2.0.0
+  cannot be used with > 1 thread until the single-slice-ROI regression is fixed upstream.
 - **SR feature coverage**: only features with a coded row in
   `common/resources/radiomicsFeaturesMaps.csv` (first-order + shape) appear in the
   TID1500 SRs; texture-class features would need IBSI codes added to the CSV.
