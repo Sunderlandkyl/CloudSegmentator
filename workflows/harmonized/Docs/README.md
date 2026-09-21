@@ -46,7 +46,7 @@ convert_manifest.json
 **Boundary B — nb2 → nb3** (`segmentations.tar.lz4`):
 ```
 <SeriesInstanceUID>/<model>/segmentations/*.nii.gz  # multilabel mask(s)
-<SeriesInstanceUID>/<model>/label_map.json          # {"model": ..., "labels": {label_id: label_name}}
+<SeriesInstanceUID>/<model>/label_map.json          # {"model": ..., "model_id": ..., "labels": {label_id: label_name}}
 engine_provenance.json                              # {"engine": ..., "version": ...}
 ```
 `<model>` is one directory per sub-model: each MOOSE model (`clin_ct_organs`, …) or
@@ -54,15 +54,21 @@ each TotalSegmentator task (`total`, `lung_vessels`).
 The `label_map.json` sidecar is emitted by nb2 **at inference time** (moosez's own
 `organ_indices`; TotalSegmentator's `class_map[<task>]`), so label IDs are always
 authoritative and never hand-transcribed. nb3 joins each `label_name` against the
-model's SNOMED CSV to build the dcmqi labelmap config.
+model's SNOMED CSV to build the dcmqi labelmap config. `model_id` names the model that
+actually ran — the directory name, except TotalSegmentator `total` with `fast=True`,
+which is `total_fast` (older archives without the field fall back to the directory name).
 
 `engine_provenance.json` records the inference engine and its package version
 (moosez / TotalSegmentator). nb3 stamps it into every SEG following the IDC
-convention: `SegmentAlgorithmName` `"MOOSE v<ver>"` / `"TotalSegmentator v<ver>"`, a
-versioned `SeriesDescription`, and `ContentCreatorName` `"IDC"`. Archives without the
+convention, extended with the `model_id`: `SegmentAlgorithmName`
+`"MOOSE v<ver> clin_ct_organs"` / `"TotalSegmentator v<ver> total_fast"`, a versioned
+`SeriesDescription`, and `ContentCreatorName` `"IDC"`. The paired SR carries the same
+string in its `SeriesDescription` (`"<…> Radiomics"`) and in each measurement group's
+`AlgorithmParameters` (`segmentation=<…>`), and every radiomics JSON row has
+`model_id`, `seg_engine`, and `seg_engine_version`. Archives without the
 sidecar fall back to the `modelName` input, unversioned. Each derived object gets a
 distinct, run-stable `SeriesNumber`: MOOSE models keep their legacy slots 1–10,
-TotalSegmentator tasks take 11–13, unknown models overflow to the next free slot, and
+TotalSegmentator tasks take 11–13 (by `model_id`, so `total_fast` gets 12), unknown models overflow to the next free slot, and
 each paired SR is in a +50 block.
 
 ## Running on Terra

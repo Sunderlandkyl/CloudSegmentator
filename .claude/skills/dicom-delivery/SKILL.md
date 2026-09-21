@@ -26,14 +26,18 @@ uploads every SEG **and** TID1500 SR as
 nb2 bundles `engine_provenance.json` (engine + package version) into the
 Boundary-B archive; nb3 stamps, per SEG:
 
-- `SegmentAlgorithmName` = `"MOOSE v3.2.2"` / `"TotalSegmentator v2.18.0"`,
-  `SegmentAlgorithmType: AUTOMATIC` (per segment)
+- `SegmentAlgorithmName` = `"MOOSE v3.2.2 clin_ct_organs"` /
+  `"TotalSegmentator v2.18.0 total_fast"` (engine + version + `model_id` from
+  nb2's `label_map.json`), `SegmentAlgorithmType: AUTOMATIC` (per segment)
 - `SeriesDescription` = `"MOOSE(v3.2.2) clin_ct_organs Segmentation"`,
   `ContentCreatorName: IDC`
 - `SeriesNumber` = sourceSeriesNumber×100 + a stable per-model slot
   (`MODEL_SERIES_SLOTS` in nb3: clin_ct_* → 1–10, total 11, total_fast 12,
   lung_vessels 13; unknown models overflow); paired SR = base + 50 + slot.
   Missing/non-numeric source SeriesNumber → base 100.
+- SR: `SeriesDescription` = `"<SegmentAlgorithmName> Radiomics"`; each
+  measurement group's `AlgorithmParameters` = `segmentation=<SegmentAlgorithmName>`.
+  Radiomics JSON rows: `model_id`, `seg_engine`, `seg_engine_version`.
 
 Each SEG/SR is its own new DICOM series (fresh dcmqi UIDs) inside the **source
 study's** StudyInstanceUID. Re-uploading a series creates new SOPInstanceUIDs —
