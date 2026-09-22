@@ -7,85 +7,106 @@ snapshots it per submission, so reconfigure-then-submit per engine is safe.
 
 Usage:
     python submit_wave.py <rootEntityType> <entityName> [entityType] [expression]
+                          [--workspace ns/name] [--config ns/name]
+                          [--registry R] [--bucket gs://...] [--models moose,totalseg]
 
-    # one entity:            submit_wave.py twoVM_pilot2 4
+    # one entity:            submit_wave.py twoVM_pilot 4
     # an entity set:         submit_wave.py twoVM_batch23 batch23_all \\
     #                                       twoVM_batch23_set this.twoVM_batch23s
 
-Constants below (workspace, config name, bucket, RAM) are the current campaign
-defaults -- edit them deliberately. dicomSegBucketUri deliveries overwrite
-per-file (same <uid>/<model>_<idx>[_sr].dcm names -> latest run wins).
+Configuration (flag, else environment variable):
+    --workspace  TERRA_WORKSPACE              <namespace>/<name> of the workspace
+    --config     TERRA_METHOD_CONFIG          <namespace>/<name> of the method config
+                                              (default: <workspace namespace>/SegmentatorTwoVmWorkflowOnTerra)
+    --registry   SEGMENTATOR_REGISTRY         Docker Hub namespace of the harmonized inference
+                                              images (<registry>/inference_<engine>:main); required.
+                                              NB imagingdatacommons/inference_{moose,totalseg}
+                                              are currently the legacy per-model images.
+    --bucket     SEGMENTATOR_DELIVERY_BUCKET  dicomSegBucketUri; unset = leave the config's value
+
+dicomSegBucketUri deliveries overwrite per-file (same <uid>/<model>_<idx>[_sr].dcm
+names -> latest run wins).
 """
-import json
-import subprocess
-import sys
-import urllib.request
+import argparse
+import os
 
-NS, NAME = "terra-billing-datester", "kyle-testing"
-CNS, CNAME = "terra-billing-datester", "SegmentatorTwoVmWorkflowOnTerra"
-FIRECLOUD = "https://api.firecloud.org/api"
-BUCKET = '"gs://idc-not-a-challenge/kyle/"'
-# 32 GB: TotalSegmentator lung_vessels needs ~14 GiB peak on a 320-Mvox series and
-# LIVELOCKS a swapless 16 GB VM (Sep 2026). ~+$0.03/h on the GPU VM.
-INFERENCE_RAM = "32"
+from terra_common import add_workspace_arg, api, split_ref, token, workspace
 
+DEFAULT_CONFIG_NAME = "SegmentatorTwoVmWorkflowOnTerra"
+
+# inferenceRAM per engine (GB). TotalSegmentator lung_vessels peaks ~14 GiB on a
+# 320-Mvox series and LIVELOCKS a swapless 16 GB VM, so TotalSeg gets 26. Asking
+# for 32 silently buys a 6-vCPU shape (+~14 % $/series) for no speed-up.
 MODELS = {
     "moose": {
-        "Segmentator.inferenceDocker": '"sunderlandkyl/inference_moose:main"',
-        "Segmentator.inferenceNotebookPath": '"workflows/models/moose/Notebooks/inference.ipynb"',
-        "Segmentator.snomedMappingPath": '""',   # moosez bundles its own mapping
-        "Segmentator.inferenceParamsYaml": '"moose_models: clin_ct_body,clin_ct_body_composition,clin_ct_cardiac,clin_ct_digestive,clin_ct_lungs,clin_ct_muscles,clin_ct_organs,clin_ct_peripheral_bones,clin_ct_ribs,clin_ct_vertebrae"',
-        "Segmentator.modelName": '"moose"',
+        "ram": "16",
+        "inputs": {
+            "Segmentator.inferenceNotebookPath": '"workflows/models/moose/Notebooks/inference.ipynb"',
+            "Segmentator.snomedMappingPath": '""',   # moosez bundles its own mapping
+            "Segmentator.inferenceParamsYaml": '"moose_models: clin_ct_body,clin_ct_body_composition,clin_ct_cardiac,clin_ct_digestive,clin_ct_lungs,clin_ct_muscles,clin_ct_organs,clin_ct_peripheral_bones,clin_ct_ribs,clin_ct_vertebrae"',
+            "Segmentator.modelName": '"moose"',
+        },
     },
     "totalseg": {
-        "Segmentator.inferenceDocker": '"sunderlandkyl/inference_totalseg:main"',
-        "Segmentator.inferenceNotebookPath": '"workflows/models/totalseg/Notebooks/inference.ipynb"',
-        "Segmentator.snomedMappingPath": '"workflows/models/totalseg/resources/snomed_mapping.csv"',
-        "Segmentator.inferenceParamsYaml": '"task: total,lung_vessels"',
-        "Segmentator.modelName": '"totalseg"',
+        "ram": "26",
+        "inputs": {
+            "Segmentator.inferenceNotebookPath": '"workflows/models/totalseg/Notebooks/inference.ipynb"',
+            "Segmentator.snomedMappingPath": '"workflows/models/totalseg/resources/snomed_mapping.csv"',
+            "Segmentator.inferenceParamsYaml": '"task: total,lung_vessels"',
+            "Segmentator.modelName": '"totalseg"',
+        },
     },
 }
 
 
-def api(path, token, method="GET", body=None):
-    data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(FIRECLOUD + path, data=data, method=method,
-                                 headers={"Authorization": f"Bearer {token}",
-                                          "Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(req) as r:
-            return json.load(r)
-    except urllib.error.HTTPError as e:
-        print(f"{method} {path} -> HTTP {e.code}: {e.read().decode()[:800]}")
-        sys.exit(1)
-
-
 def main():
-    root_type, entity_name = sys.argv[1], sys.argv[2]
-    entity_type = sys.argv[3] if len(sys.argv) > 3 else root_type
-    expression = sys.argv[4] if len(sys.argv) > 4 else None
-    token = subprocess.run("gcloud auth print-access-token", shell=True,
-                           capture_output=True, text=True).stdout.strip()
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("root_type", help="root entity type of the data table")
+    ap.add_argument("entity_name", help="entity (or entity set) to run on")
+    ap.add_argument("entity_type", nargs="?", help="entity type if not root_type (e.g. a set)")
+    ap.add_argument("expression", nargs="?", help="expression expanding a set, e.g. this.twoVM_xs")
+    add_workspace_arg(ap)
+    ap.add_argument("--config", default=os.environ.get("TERRA_METHOD_CONFIG"),
+                    help="method config <namespace>/<name> (default: $TERRA_METHOD_CONFIG)")
+    ap.add_argument("--registry", default=os.environ.get("SEGMENTATOR_REGISTRY"),
+                    help="Docker Hub namespace of the inference images (default: $SEGMENTATOR_REGISTRY)")
+    ap.add_argument("--bucket", default=os.environ.get("SEGMENTATOR_DELIVERY_BUCKET"),
+                    help="dicomSegBucketUri for SEG/SR delivery (default: leave config value)")
+    ap.add_argument("--models", default=",".join(MODELS),
+                    help="comma-separated engines to submit (default: all)")
+    ap.add_argument("--inference-ram", help="override inferenceRAM (GB) for every engine")
+    args = ap.parse_args()
 
-    for model, overrides in MODELS.items():
-        cfg = api(f"/workspaces/{NS}/{NAME}/method_configs/{CNS}/{CNAME}", token)
-        cfg["inputs"].update(overrides)
-        cfg["inputs"]["Segmentator.dicomSegBucketUri"] = BUCKET
+    ns, name = workspace(args)
+    if not args.registry:
+        ap.error("inference image registry not set: pass --registry or set $SEGMENTATOR_REGISTRY")
+    cns, cname = split_ref(args.config or f"{ns}/{DEFAULT_CONFIG_NAME}",
+                           "Method config", "--config", "TERRA_METHOD_CONFIG")
+    cfg_path = f"/workspaces/{ns}/{name}/method_configs/{cns}/{cname}"
+    tok = token()
+
+    for model in args.models.split(","):
+        spec = MODELS[model]
+        cfg = api(cfg_path, tok)
+        cfg["inputs"].update(spec["inputs"])
+        cfg["inputs"]["Segmentator.inferenceDocker"] = f'"{args.registry}/inference_{model}:main"'
+        cfg["inputs"]["Segmentator.inferenceRAM"] = args.inference_ram or spec["ram"]
+        if args.bucket:
+            cfg["inputs"]["Segmentator.dicomSegBucketUri"] = f'"{args.bucket}"'
         cfg["inputs"]["Segmentator.dicomStoreImportUri"] = '""'
-        cfg["inputs"]["Segmentator.inferenceRAM"] = INFERENCE_RAM
-        cfg["rootEntityType"] = root_type
-        api(f"/workspaces/{NS}/{NAME}/method_configs/{CNS}/{CNAME}", token, "PUT", cfg)
+        cfg["rootEntityType"] = args.root_type
+        api(cfg_path, tok, "PUT", cfg)
         body = {
-            "methodConfigurationNamespace": CNS,
-            "methodConfigurationName": CNAME,
-            "entityType": entity_type,
-            "entityName": entity_name,
+            "methodConfigurationNamespace": cns,
+            "methodConfigurationName": cname,
+            "entityType": args.entity_type or args.root_type,
+            "entityName": args.entity_name,
             "useCallCache": False,
             "deleteIntermediateOutputFiles": False,
         }
-        if expression:
-            body["expression"] = expression
-        sub = api(f"/workspaces/{NS}/{NAME}/submissions", token, "POST", body)
+        if args.expression:
+            body["expression"] = args.expression
+        sub = api(f"/workspaces/{ns}/{name}/submissions", tok, "POST", body)
         print(f"{model}: submissionId={sub['submissionId']}")
 
 

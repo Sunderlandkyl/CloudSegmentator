@@ -34,7 +34,7 @@ Usage:
                               [--region-rates region_rates.json] [--no-bq] [--no-metrics]
 
 The billing project / workspace are parsed from a Terra submission_history URL, or
-pass --workspace explicitly (e.g. terra-billing-datester/kyle-testing).
+pass --workspace <namespace>/<name> explicitly.
 """
 import argparse
 import csv

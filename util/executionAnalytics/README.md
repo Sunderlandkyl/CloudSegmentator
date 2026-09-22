@@ -154,6 +154,25 @@ digests, machine shapes, radiomics engine, region) and the pilot's feature range
 inference / ref-download / SEG / radiomics / *VM time not in any phase*), which is the
 first-order profile for deciding what to optimise next.
 
+## Findings so far (harmonized workflow, Sep 2026)
+
+Measured on spot T4s in us-west4 with `radiomicsMethod=radiomicsjl`; treat as starting
+points and re-measure after engine or image changes.
+
+* **Batch size**: $/series falls monotonically with series per entity, as the ~15–20 min
+  fixed VM overhead amortizes. The knee is n≈20 (MOOSE) / 20–30 (TotalSegmentator);
+  above it, the chance of exhausting spot retries and the wall clock grow for cents of
+  saving. `make_terra_manifest.py --batch-target 900000000` voxels ≈ 20 series.
+* **Unit cost**: ~$0.02/series on calm days to ~$0.045/series under preemption churn,
+  both engines combined, at n≈20. Preemption is a scenario, not a prediction — `batch`
+  shows both curves.
+* **Fits go stale**: a TotalSegmentator fit under-predicted by 29 % after an engine
+  upgrade plus an added task. Refit after any engine, task, or image change.
+* **Regions**: us-west4 was the cheapest US region (~11 % under us-east4); billed spot
+  rates ran 0.74–0.82× the catalog.
+* **Scale**: the eligible CMB + CPTAC CT cohort (~4,341 series: regularly spaced 3D,
+  ≥20 slices) was predicted at ≈ $85–195 for both engines.
+
 ## Caveats
 
 * Billing-export lag (24–48 h); `Estimated` vs `Actual` Terra cost; export task labels are

@@ -1,35 +1,25 @@
 """Poll Terra submissions; print a line on every status change; exit when all done.
 
-Usage: watch_wave.py <label:submissionId> [<label:submissionId> ...]
+Usage: watch_wave.py <label:submissionId> [<label:submissionId> ...] [--workspace ns/name]
 
 Each printed line is an event (drive it from a Monitor or a background shell and
 treat exit as "all terminal"). Warns hourly after 3 h so preemption churn or a
 livelocked task gets noticed. Poll errors (Terra 502s) are printed and retried.
 """
+import argparse
 import json
-import subprocess
-import sys
 import time
-import urllib.request
 
-NS, NAME = "terra-billing-datester", "kyle-testing"
-FIRECLOUD = "https://api.firecloud.org/api"
-
-
-def token():
-    return subprocess.run("gcloud auth print-access-token", shell=True,
-                          capture_output=True, text=True).stdout.strip()
-
-
-def api(path, tok):
-    req = urllib.request.Request(FIRECLOUD + path,
-                                 headers={"Authorization": f"Bearer {tok}"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r)
+from terra_common import add_workspace_arg, api, token, workspace
 
 
 def main():
-    targets = [a.split(":", 1) for a in sys.argv[1:]]
+    ap = argparse.ArgumentParser(description="Watch submissions until all are terminal.")
+    ap.add_argument("targets", nargs="+", metavar="label:submissionId")
+    add_workspace_arg(ap)
+    args = ap.parse_args()
+    ns, name = workspace(args)
+    targets = [a.split(":", 1) for a in args.targets]
     prev = {}
     start = time.time()
     warned_hours = set()
@@ -38,7 +28,8 @@ def main():
         all_done = True
         for label, sid in targets:
             try:
-                det = api(f"/workspaces/{NS}/{NAME}/submissions/{sid}", tok)
+                det = api(f"/workspaces/{ns}/{name}/submissions/{sid}", tok,
+                          timeout=60, exit_on_http_error=False)
             except Exception as exc:  # noqa: BLE001 - transient API errors
                 print(f"{label}: poll error ({exc}); retrying", flush=True)
                 all_done = False

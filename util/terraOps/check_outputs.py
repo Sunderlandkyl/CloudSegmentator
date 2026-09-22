@@ -1,7 +1,7 @@
 """Verify a finished harmonized-workflow submission: per-workflow status, run
 summaries, and the content of every error file.
 
-Usage: check_outputs.py <submissionId> [--full-errors]
+Usage: check_outputs.py <submissionId> [--full-errors] [--workspace ns/name]
 
 Default prints each error file's first lines; --full-errors prints everything.
 Triage the errors against the KNOWN failure modes before treating anything as
@@ -12,20 +12,11 @@ new (see .claude/skills/terra-runs/SKILL.md):
   - "moose produced no output" (body_composition) -> anatomical (no L3 in FOV), benign
   - "Radiomics.jl worker crashed"          -> nb3 RAM pressure (giant series on 16 GB VM)
 """
+import argparse
 import json
 import subprocess
-import sys
-import urllib.request
 
-NS, NAME = "terra-billing-datester", "kyle-testing"
-FIRECLOUD = "https://api.firecloud.org/api"
-
-
-def api(path, tok):
-    req = urllib.request.Request(FIRECLOUD + path,
-                                 headers={"Authorization": f"Bearer {tok}"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)
+from terra_common import add_workspace_arg, api, token, workspace
 
 
 def gcs_cat(url):
@@ -34,10 +25,15 @@ def gcs_cat(url):
 
 
 def main():
-    sid = sys.argv[1]
-    full = "--full-errors" in sys.argv
-    tok = subprocess.run("gcloud auth print-access-token", shell=True,
-                         capture_output=True, text=True).stdout.strip()
+    ap = argparse.ArgumentParser(description="Verify a finished submission's outputs.")
+    ap.add_argument("submission_id")
+    ap.add_argument("--full-errors", action="store_true",
+                    help="print every line of each error file")
+    add_workspace_arg(ap)
+    args = ap.parse_args()
+    NS, NAME = workspace(args)
+    sid, full = args.submission_id, args.full_errors
+    tok = token()
     det = api(f"/workspaces/{NS}/{NAME}/submissions/{sid}", tok)
     print(f"submission {sid[:8]}: status={det.get('status')} "
           f"est=${det.get('cost', 0):.2f}  (billing settles ~24-48 h later)")

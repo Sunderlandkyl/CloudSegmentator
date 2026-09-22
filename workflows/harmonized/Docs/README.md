@@ -14,6 +14,10 @@ output conversion are shared.
 > The legacy `workflows/MOOSE` and `workflows/TotalSegmentator` pipelines remain the
 > supported path until then.
 
+**More docs:** [operations.md](operations.md) — submitting, monitoring, triaging and
+checking delivered outputs; [development.md](development.md) — changing the notebooks
+and WDL safely, reproducing failures locally.
+
 ## Architecture
 
 Three notebooks, two hand-off contracts, one parameterized WDL
@@ -87,6 +91,8 @@ each paired SR is in a +50 block.
    + `secretProject` for a private GCS bucket — same HMAC/Secret-Manager setup as the
    legacy MOOSE workflow, see [`workflows/MOOSE/Docs/README.md`](../../MOOSE/Docs/README.md)).
 4. Run.
+
+To submit and monitor batches from the command line, see [operations.md](operations.md).
 
 ### Key inputs
 
